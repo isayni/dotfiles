@@ -41,7 +41,7 @@ setopt autocd
 unsetopt beep
 
 # these characters are parts of words
-WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+WORDCHARS='*?-.[]~=&;!#$%^(){}<>'
 
 bindkey -e
 export EDITOR=vim

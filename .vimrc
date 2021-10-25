@@ -13,7 +13,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'dense-analysis/ale'
-Plug 'junegunn/goyo.vim'
+Plug 'junegunn/vim-easy-align'
 call plug#end()
 
 command RC :e $MYVIMRC
@@ -116,6 +116,10 @@ set updatetime=500
 set mouse=a
 set autochdir
 
+" easy-align
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
 " ale | OmniSharp
 let g:ale_linters = {
 \ 'cs': ['OmniSharp']
@@ -145,51 +149,4 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-"   python execution and output to a reusable buffer window
-autocmd Filetype python nnoremap <silent> <F5> :call SaveAndExecutePython()<CR>
-autocmd Filetype python vnoremap <silent> <F5> :<C-u>call SaveAndExecutePython()<CR>
-
-function! SaveAndExecutePython()
-    " save and reload current file
-    silent execute "update | edit"
-    " execute script and save output to the @o registry
-    let @o=system("python " . shellescape(expand('%:p')))
-    " get file path of current file
-    let s:current_buffer_file_path = expand("%")
-
-    let s:output_buffer_name = "Python"
-    let s:output_buffer_filetype = "output"
-
-    " reuse existing buffer window if it exists otherwise create a new one
-    " vertically
-    if !exists("s:buf_nr") || !bufexists(s:buf_nr)
-        silent execute 'botright vnew ' . s:output_buffer_name
-        let s:buf_nr = bufnr('%')
-    elseif bufwinnr(s:buf_nr) == -1
-        silent execute 'botright vnew'
-        silent execute s:buf_nr . 'buffer'
-    elseif bufwinnr(s:buf_nr) != bufwinnr('%')
-        silent execute bufwinnr(s:buf_nr) . 'wincmd w'
-    endif
-
-    "silent execute "setlocal filetype=" . s:output_buffer_filetype
-    setlocal bufhidden=delete
-    setlocal noswapfile
-    setlocal winfixheight
-    setlocal nobuflisted
-    setlocal nonumber
-    setlocal norelativenumber
-    setlocal showbreak=""
-
-    " clear the buffer
-    setlocal noreadonly
-    setlocal modifiable
-    %delete _
-
-    " add the console output
-    silent execute ".!python " . shellescape(s:current_buffer_file_path , 1)
-    "read !python \#:p
-    "norm ggVG<Esc>d"opggdd
 endfunction
