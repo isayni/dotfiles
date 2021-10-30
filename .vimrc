@@ -12,7 +12,6 @@ Plug 'tpope/vim-surround'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot'
 Plug 'OmniSharp/omnisharp-vim'
-Plug 'dense-analysis/ale'
 Plug 'junegunn/vim-easy-align'
 call plug#end()
 
@@ -120,10 +119,6 @@ set autochdir
 xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
-" ale | OmniSharp
-let g:ale_linters = {
-\ 'cs': ['OmniSharp']
-\}
 let g:OmniSharp_server_use_mono = 1
 
 "   close-tag
