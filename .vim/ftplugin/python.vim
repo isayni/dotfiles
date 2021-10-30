@@ -1,31 +1,28 @@
 "   python execution and output to a reusable buffer window
-nnoremap <silent> <F5> :call ExecutePython()<CR>
-"vnoremap <silent> <F5> :<C-u>call ExecutePython()<CR>
+nnoremap <silent> <F5> :call PythonOutput()<CR>
+nnoremap <silent> <F6> :call ExecutePython()<CR>
 
-function ExecutePython()
+function PythonOutput()
     " save current file
     silent execute "update"
-    " execute script and save output to the @o registry
-    let @o=system("python " . shellescape(expand('%:p')))
     " get file path of current file
     let s:current_buffer_file_path = expand("%")
-
-    let s:output_buffer_name = "Python"
+    let s:output_buffer_name = "output"
     let s:output_buffer_filetype = "output"
 
     " reuse existing buffer window if it exists otherwise create a new one
     " vertically
     if !exists("s:buf_nr") || !bufexists(s:buf_nr)
-        silent execute 'botright vnew ' . s:output_buffer_name
+        silent execute 'vnew ' . s:output_buffer_name
         let s:buf_nr = bufnr('%')
     elseif bufwinnr(s:buf_nr) == -1
-        silent execute 'botright vnew'
+        silent execute 'vnew'
         silent execute s:buf_nr . 'buffer'
     elseif bufwinnr(s:buf_nr) != bufwinnr('%')
         silent execute bufwinnr(s:buf_nr) . 'wincmd w'
     endif
 
-    "silent execute "setlocal filetype=" . s:output_buffer_filetype
+    silent execute "setlocal filetype=" . s:output_buffer_filetype
     setlocal bufhidden=delete
     setlocal noswapfile
     setlocal winfixheight
@@ -34,14 +31,22 @@ function ExecutePython()
     setlocal norelativenumber
     setlocal showbreak=""
 
-    " clear the buffer
     setlocal noreadonly
     setlocal modifiable
+    " clear the buffer
     %delete _
 
     " add the console output
     silent execute ".!python " . shellescape(s:current_buffer_file_path , 1)
-    "read !python \#:p
-    "norm ggVG<Esc>d"opggdd
-    "
+endfunction
+function ExecutePython()
+    if !exists("s:buf_nr") || !bufexists(s:buf_nr)
+        silent execute 'vert ter python %:p'
+        let s:buf_nr = bufnr('%')
+    elseif bufwinnr(s:buf_nr) == -1
+        silent execute 'vert ter python %:p'
+        silent execute s:buf_nr . 'buffer'
+    elseif bufwinnr(s:buf_nr) != bufwinnr('%')
+        silent execute bufwinnr(s:buf_nr) . 'wincmd w'
+    endif
 endfunction

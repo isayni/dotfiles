@@ -131,7 +131,7 @@ layout_theme = {
     "margin": 4,
     "border_width": 2,
     "border_focus": colors[8],
-    "border_normal": colors[2],
+    "border_normal": colors[0],
 }
 floating_theme = {
     "margin": 0,
