@@ -1,6 +1,5 @@
 "   python execution and output to a reusable buffer window
 nnoremap <silent> <F5> :call PythonOutput()<CR>
-nnoremap <silent> <F6> :call ExecutePython()<CR>
 
 function PythonOutput()
     " save current file
@@ -38,15 +37,4 @@ function PythonOutput()
 
     " add the console output
     silent execute ".!python " . shellescape(s:current_buffer_file_path , 1)
-endfunction
-function ExecutePython()
-    if !exists("s:buf_nr") || !bufexists(s:buf_nr)
-        silent execute 'vert ter python %:p'
-        let s:buf_nr = bufnr('%')
-    elseif bufwinnr(s:buf_nr) == -1
-        silent execute 'vert ter python %:p'
-        silent execute s:buf_nr . 'buffer'
-    elseif bufwinnr(s:buf_nr) != bufwinnr('%')
-        silent execute bufwinnr(s:buf_nr) . 'wincmd w'
-    endif
 endfunction

@@ -48,7 +48,7 @@ colorscheme gruvbox
 hi Normal guibg = NONE
 hi Visual guibg =#ffffff
 set cursorline
-hi CursorLine cterm=underline guibg=NONE
+hi CursorLine cterm=NONE guibg=NONE
 
 " Remove trailing whitespaces on save
 autocmd BufWritePre * %s/\s\+$//e
@@ -116,8 +116,8 @@ set mouse=a
 set autochdir
 
 " easy-align
-xmap ga <Plug>(EasyAlign)
-nmap ga <Plug>(EasyAlign)
+xmap gs <Plug>(EasyAlign)
+nmap gs <Plug>(EasyAlign)
 
 let g:OmniSharp_server_use_mono = 1
 
