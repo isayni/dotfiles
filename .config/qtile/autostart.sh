@@ -2,5 +2,4 @@
 picom &
 nitrogen --restore &
 dunst &
-radeon-profile &
 conky &
