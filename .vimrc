@@ -13,6 +13,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'sheerun/vim-polyglot'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'junegunn/vim-easy-align'
+Plug 'maksimr/vim-jsbeautify'
 call plug#end()
 
 command RC :e $MYVIMRC
@@ -136,6 +137,23 @@ let g:closetag_regions = {
     \ 'javascriptreact': 'jsxRegion',
     \ }
 "    COC
+let g:coc_global_extensions = [
+\   'coc-json',
+\   'coc-clangd',
+\   'coc-css',
+\   'coc-cssmodules',
+\   'coc-emmet',
+\   'coc-git',
+\   'coc-html',
+\   'coc-html-css-support',
+\   'coc-java',
+\   'coc-jedi',
+\   'coc-pairs',
+\   'coc-sh',
+\   'coc-tsserver',
+\   'coc-xml',
+\   'coc-yaml'
+\   ]
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
