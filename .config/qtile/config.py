@@ -20,28 +20,31 @@ bar_size=22
 terminal = guess_terminal()
 
 # tokyonight
-colors = ['#1a1b26', #0
-          '#ccd0f0', #1
-          '#24283b', #2
-          '#ff7a93', #3
-          '#b9f27c', #4
-          '#ff9e64', #5
-          '#7da6ff', #6
-          '#bb9af7', #7
-          '#0db9d7', #8
-          '#acb0d0'] #9
-
+colors = [
+    '#1a1b26', #0
+    '#ccd0f0', #1
+    '#24283b', #2
+    '#ff7a93', #3
+    '#b9f27c', #4
+    '#ff9e64', #5
+    '#7da6ff', #6
+    '#bb9af7', #7
+    '#0db9d7', #8
+    '#acb0d0', #9
+]
 # gruvbox
-colors = ['#242424', #0
-          '#fbf1c7', #1
-          '#383535', #2
-          '#fb4934', #3
-          '#b8bb26', #4
-          '#fabd2f', #5
-          '#83a598', #6
-          '#d3869b', #7
-          '#8ec07c', #8
-          '#ebdbb2'] #9
+colors = [
+    '#242424', #0
+    '#fbf1c7', #1
+    '#383535', #2
+    '#fb4934', #3
+    '#b8bb26', #4
+    '#fabd2f', #5
+    '#83a598', #6
+    '#d3869b', #7
+    '#8ec07c', #8
+    '#ebdbb2', #9
+]
 
 keys = [
     # Switch between windows
@@ -146,6 +149,9 @@ layouts = [
     # layout.VerticalTile(),
     layout.Zoomy(**layout_theme),
 ]
+second_screen_layouts = [
+    layout.Columns(num_columns=1, **layout_theme)
+]
 
 widget_defaults = dict(
     font='Fira Code SemiBold',
@@ -228,8 +234,35 @@ main_widgets = [
         linewidth = 0,
         padding = 4
     ),
-            ]
-
+]
+second_screen_widgets = [
+    widget.CurrentLayoutIcon(
+        scale = 0.8,
+        padding = 6,
+    ),
+    widget.Sep(
+        linewidth = 2,
+        padding = 4
+    ),
+    widget.GroupBox(
+        font = 'Inconsolata extra expanded black',
+        disable_drag = True,
+        borderwidth = 2,
+        highlight_method = 'line',
+        highlight_color = '#111111',
+        active = colors[1],
+        inactive = colors[2],
+        this_current_screen_border = colors[3],
+        other_screen_border = colors[6],
+    ),
+    widget.WindowName(
+        background = colors[2]
+    ),
+    widget.Clock(
+        format='%H:%M:%S',
+        foreground = colors[5]
+    ),
+]
 screens = [
     Screen(
         top=bar.Bar(
@@ -239,34 +272,8 @@ screens = [
         ),
     ),
     Screen(
-        top=bar.Bar([
-            widget.CurrentLayoutIcon(
-                scale = 0.8,
-                padding = 6,
-            ),
-            widget.Sep(
-                linewidth = 2,
-                padding = 4
-            ),
-            widget.GroupBox(
-                font = 'Inconsolata extra expanded black',
-                disable_drag = True,
-                borderwidth = 2,
-                highlight_method = 'line',
-                highlight_color = '#111111',
-                active = colors[1],
-                inactive = colors[2],
-                this_current_screen_border = colors[3],
-                other_screen_border = colors[6],
-            ),
-            widget.WindowName(
-                background = colors[2]
-            ),
-            widget.Clock(
-                format='%H:%M:%S',
-                foreground = colors[5]
-            ),
-        ],
+        top=bar.Bar(
+            second_screen_widgets,
             size=bar_size,
             margin=[4, 6, 2, 6]
         ),
@@ -330,9 +337,6 @@ def autostart():
 @hook.subscribe.startup
 def start():
     if(len(qtile.screens) > 1):
-        second_screen_layouts = [
-            layout.Columns(num_columns=1, **layout_theme)
-        ]
         qtile.groups[8]._configure(second_screen_layouts, floating_layout, qtile)
 
         qtile.groups_map['1'].cmd_toscreen(0)
