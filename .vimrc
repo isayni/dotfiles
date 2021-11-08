@@ -1,6 +1,6 @@
 call plug#begin('~/.vim/plugged')
 " colorschemes
-Plug 'gruvbox-community/gruvbox'
+Plug 'morhetz/gruvbox'
 Plug 'ghifarit53/tokyonight-vim'
 "
 Plug 'itchyny/lightline.vim'

@@ -1,4 +1,12 @@
-# QTile window manager config file
+"""
+      ___  _   _ _
+     / _ \| |_(_) | ___
+    | | | | __| | |/ _ \
+    | |_| | |_| | |  __/
+     \__\_\\__|_|_|\___|
+
+    Configuartion file for Qtile window manager.
+"""
 import subprocess, os, time
 from typing import List
 
@@ -13,27 +21,20 @@ terminal = guess_terminal()
 
 # tokyonight
 colors = ['#1a1b26', #0
-          '#ccd0f0',
-          '#24283b', #8
-          '#ff7a93', #1
-          '#b9f27c', #2
-          '#ff9e64', #3
-          '#7da6ff', #4
-          '#bb9af7', #5
-          '#0db9d7', #6
-          '#acb0d0'] #7
+          '#ccd0f0', #1
+          '#24283b', #2
+          '#ff7a93', #3
+          '#b9f27c', #4
+          '#ff9e64', #5
+          '#7da6ff', #6
+          '#bb9af7', #7
+          '#0db9d7', #8
+          '#acb0d0'] #9
 
 # gruvbox
 colors = ['#242424', #0
           '#fbf1c7', #1
           '#383535', #2
-          # '#cc241d',
-          # '#98971a',
-          # '#d79921',
-          # '#458588',
-          # '#b16286',
-          # '#689d6a',
-          # '#a89984']
           '#fb4934', #3
           '#b8bb26', #4
           '#fabd2f', #5
@@ -87,11 +88,11 @@ keys = [
     Key([mod], "F3",         lazy.spawn("dmenu_unicode")),
     Key([], "Scroll_Lock",   lazy.spawn("clip2qr")),
     Key([], "Print",         lazy.spawn("screenshot")),
+    Key([mod], "z",          lazy.spawn('pavucontrol')),
     Key([], 'F1',            lazy.run_extension(extension.WindowList(dmenu_font = 'JetBrains Mono'))),
 
     # Scratchpads
     Key([mod], "x", lazy.group['scratchpad'].dropdown_toggle('term')),
-    Key([mod], "z", lazy.group['scratchpad'].dropdown_toggle('pavu')),
 ]
 
 groups = [Group(i) for i in "123456789"]
@@ -99,12 +100,10 @@ groups = [Group(i) for i in "123456789"]
 for i in groups:
     keys.extend([
         # mod1 + letter of group = switch to group
-        Key([mod], i.name, lazy.group[i.name].toscreen(),
-            desc="Switch to group {}".format(i.name)),
+        Key([mod], i.name, lazy.group[i.name].toscreen()),
 
-        # mod1 + shift + letter of group = switch to & move focused window to group
-        Key([mod, "shift"], i.name, lazy.window.togroup(i.name, switch_group=False),
-            desc="Move focused window to group {}".format(i.name)),
+        # mod1 + shift + letter of group = move focused window to group
+        Key([mod, "shift"], i.name, lazy.window.togroup(i.name, switch_group=False)),
     ])
 
 groups.extend([
@@ -115,13 +114,6 @@ groups.extend([
                  x=0.025,
                  y=0.006
         ),
-        DropDown('pavu', 'pavucontrol',
-                 opacity=1,
-                 width=0.4,
-                 height=0.4,
-                 x=0.3,
-                 y=0.006
-        )
     ])
 ])
 
@@ -140,28 +132,9 @@ floating_theme = {
     "border_normal": colors[7]
 }
 layouts = [
-    layout.Columns(
-        **layout_theme
-    ),
-    # layout.Floating(
-        # **layout_theme
-    # ),
-    # layout.TreeTab(
-        # active_bg=colors[7],
-        # bg_color='#121212',
-        # border_width=2,
-        # inactive_bg=colors[8],
-        # inactive_fg='#000000',
-        # padding_y=5,
-        # panel_width=160,
-        # previous_on_rm=True,
-        # font='Inconsolata Bold',
-        # fontsize=18,
-        # padding_x=10,
-        # section_left=20,
-        # section_fontsize=16,
-        # section_top=10
-    # ),
+    layout.Columns(**layout_theme),
+    # layout.Floating(),
+    # layout.TreeTab(),
     # layout.Matrix(),
     # layout.MonadTall(),
     # layout.MonadWide(),
@@ -171,7 +144,7 @@ layouts = [
     # layout.Stack(num_stacks=2),
     # layout.Bsp(),
     # layout.VerticalTile(),
-    layout.Zoomy(),
+    layout.Zoomy(**layout_theme),
 ]
 
 widget_defaults = dict(
@@ -183,7 +156,7 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
-widgets = [
+main_widgets = [
     widget.CurrentLayoutIcon(
         scale = 0.8,
         padding = 6,
@@ -260,7 +233,7 @@ widgets = [
 screens = [
     Screen(
         top=bar.Bar(
-            widgets,
+            main_widgets,
             size=bar_size,
             margin=[4, 6, 2, 6]
         ),
@@ -329,7 +302,6 @@ floating_layout = layout.Floating(float_rules=[
 
 dgroups_key_binder = None
 dgroups_app_rules = []  # type: List
-main = None  # WARNING: this is deprecated and will be removed soon
 
 follow_mouse_focus = False
 bring_front_click = False
@@ -337,7 +309,7 @@ cursor_warp = False
 auto_fullscreen = True
 focus_on_window_activation = "smart"
 
-wmname = "LG3D"
+wmname = "Qtile"
 
 # Prevent floating windows to go behind the stacked ones
 @hook.subscribe.focus_change
@@ -351,5 +323,17 @@ def float_to_front():
 
 @hook.subscribe.startup_once
 def autostart():
-    home = os.path.expanduser('~/.config/qtile/autostart.sh')
-    subprocess.Popen([home])
+    subprocess.Popen(
+        [os.path.expanduser('~/.config/qtile/autostart.sh')]
+    )
+
+@hook.subscribe.startup
+def start():
+    if(len(qtile.screens) > 1):
+        second_screen_layouts = [
+            layout.Columns(num_columns=1, **layout_theme)
+        ]
+        qtile.groups[8]._configure(second_screen_layouts, floating_layout, qtile)
+
+        qtile.groups_map['1'].cmd_toscreen(0)
+        qtile.groups_map['9'].cmd_toscreen(1)
