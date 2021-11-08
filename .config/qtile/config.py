@@ -19,32 +19,34 @@ mod = "mod4"
 bar_size=22
 terminal = guess_terminal()
 
-# tokyonight
-colors = [
-    '#1a1b26', #0
-    '#ccd0f0', #1
-    '#24283b', #2
-    '#ff7a93', #3
-    '#b9f27c', #4
-    '#ff9e64', #5
-    '#7da6ff', #6
-    '#bb9af7', #7
-    '#0db9d7', #8
-    '#acb0d0', #9
-]
-# gruvbox
-colors = [
-    '#242424', #0
-    '#fbf1c7', #1
-    '#383535', #2
-    '#fb4934', #3
-    '#b8bb26', #4
-    '#fabd2f', #5
-    '#83a598', #6
-    '#d3869b', #7
-    '#8ec07c', #8
-    '#ebdbb2', #9
-]
+def init_colors(scheme):
+    if scheme == "tokyonight":
+        return {
+            "background": '#1a1b26', #0
+            "foreground": '#ccd0f0', #1
+            "black":      '#24283b', #2
+            "red":        '#ff7a93', #3
+            "green":      '#b9f27c', #4
+            "yellow":     '#ff9e64', #5
+            "blue":       '#7da6ff', #6
+            "magenta":    '#bb9af7', #7
+            "cyan":       '#0db9d7', #8
+            "white":      '#acb0d0', #9
+        }
+    if scheme == "gruvbox":
+        return {
+            "background": '#242424', #0
+            "foreground": '#fbf1c7', #1
+            "black":      '#383535', #2
+            "red":        '#fb4934', #3
+            "green":      '#b8bb26', #4
+            "yellow":     '#fabd2f', #5
+            "blue":       '#83a598', #6
+            "magenta":    '#d3869b', #7
+            "cyan":       '#8ec07c', #8
+            "white":      '#ebdbb2', #9
+        }
+colors = init_colors("gruvbox")
 
 keys = [
     # Switch between windows
@@ -125,14 +127,16 @@ groups.extend([
 layout_theme = {
     "margin": 4,
     "border_width": 2,
-    "border_focus": '#d79921',
-    "border_normal": colors[0],
+    "border_focus": colors["yellow"],
+    "border_normal": colors["background"],
+    "border_focus_stack": colors["red"],
+    "border_normal_stack": colors["background"]
 }
 floating_theme = {
     "margin": 0,
     "border_width": 2,
-    "border_focus": colors[8],
-    "border_normal": colors[7]
+    "border_focus": colors["cyan"],
+    "border_normal": colors["magenta"]
 }
 layouts = [
     layout.Columns(**layout_theme),
@@ -157,8 +161,8 @@ widget_defaults = dict(
     font='Fira Code SemiBold',
     fontsize=15,
     padding=4,
-    foreground=colors[9],
-    background=colors[0]
+    foreground=colors["white"],
+    background=colors["background"]
 )
 extension_defaults = widget_defaults.copy()
 
@@ -177,23 +181,23 @@ main_widgets = [
         borderwidth = 2,
         highlight_method = 'line',
         highlight_color = '#111111',
-        active = colors[1],
-        inactive = colors[2],
-        this_current_screen_border = colors[3],
-        other_screen_border = colors[6],
+        active = colors["foreground"],
+        inactive = colors["black"],
+        this_current_screen_border = colors["red"],
+        other_screen_border = colors["blue"],
     ),
     widget.WindowName(
-        background = colors[2]
+        background = colors["black"]
     ),
     widget.Memory(
-        foreground = colors[3],
+        foreground = colors["red"],
     ),
     widget.Sep(
         linewidth = 2,
         padding = 4
     ),
     widget.CPU(
-        foreground = colors[4],
+        foreground = colors["green"],
         format = '{freq_current}GHz {load_percent}%'
     ),
     widget.Sep(
@@ -203,14 +207,14 @@ main_widgets = [
     widget.Net(
         interface = "enp34s0",
         format = '⬇{down} ⬆{up}',
-        foreground = colors[6]
+        foreground = colors["blue"]
     ),
     widget.Sep(
         linewidth = 2,
         padding = 4
     ),
     widget.Systray(
-        background = colors[2],
+        background = colors["black"],
     ),
     widget.Sep(
         margin=10,
@@ -219,7 +223,7 @@ main_widgets = [
     ),
     widget.Clock(
         format='%d %B - %a %H:%M:%S',
-        foreground = colors[5]
+        foreground = colors["yellow"]
     ),
     widget.Sep(
         linewidth = 2,
@@ -250,17 +254,17 @@ second_screen_widgets = [
         borderwidth = 2,
         highlight_method = 'line',
         highlight_color = '#111111',
-        active = colors[1],
-        inactive = colors[2],
-        this_current_screen_border = colors[3],
-        other_screen_border = colors[6],
+        active = colors["foreground"],
+        inactive = colors["black"],
+        this_current_screen_border = colors["red"],
+        other_screen_border = colors["blue"],
     ),
     widget.WindowName(
-        background = colors[2]
+        background = colors["black"]
     ),
     widget.Clock(
         format='%H:%M:%S',
-        foreground = colors[5]
+        foreground = colors["yellow"]
     ),
 ]
 screens = [
