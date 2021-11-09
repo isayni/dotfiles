@@ -184,7 +184,9 @@ main_widgets = [
         active = colors["foreground"],
         inactive = colors["black"],
         this_current_screen_border = colors["red"],
+        this_screen_border = colors["white"],
         other_screen_border = colors["blue"],
+        other_current_screen_border = colors["black"],
     ),
     widget.WindowName(
         background = colors["black"]
@@ -230,7 +232,7 @@ main_widgets = [
         padding = 4
     ),
     widget.Image(
-        filename = '~/YTOW/img/icons/power_button.png',
+        filename = '~/img/icons/power_button.png',
         margin = 4,
         mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn("dmenu_power")}
     ),
@@ -257,7 +259,9 @@ second_screen_widgets = [
         active = colors["foreground"],
         inactive = colors["black"],
         this_current_screen_border = colors["red"],
+        this_screen_border = colors["white"],
         other_screen_border = colors["blue"],
+        other_current_screen_border = colors["black"],
     ),
     widget.WindowName(
         background = colors["black"]

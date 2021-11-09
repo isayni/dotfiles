@@ -31,18 +31,18 @@ endif
 
 " SCHEME
 set termguicolors
-let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
-let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
 set bg=dark
 let g:tokyonight_style = 'night'
 let g:tokyonight_enable_italic = 1
 colorscheme gruvbox
-" Transparent background
 hi Normal guibg = NONE
 hi Visual guibg =#161616
 hi Visual guifg =#fbf1c7
 set cursorline
 hi CursorLine cterm=NONE guibg=NONE
+" Alacritty
+let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
 
 set clipboard=unnamedplus
 set noswapfile
@@ -87,11 +87,11 @@ nnoremap K :m .-2<CR>==
 nnoremap J :m .+1<CR>==
 
 " tab lines in visual mode
-vmap <Tab> >gv
-vmap <S-Tab> <gv
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
 
 " map S to global replace
-nmap S :%s///g<Left><Left><Left>
+nnoremap S :%s///g<Left><Left><Left>
 
 " Remove trailing whitespaces on save
 autocmd BufWritePre * %s/\s\+$//e
@@ -107,13 +107,12 @@ tnoremap <C-l> <C-w>l
 noremap  <C-l> <C-w>l
 
 "    easy-align
-xmap gs <Plug>(EasyAlign)
-nmap gs <Plug>(EasyAlign)
+noremap gs <Plug>(EasyAlign)
 
 "    NERDTree
 let NERDTreeWinSize=20
 let NERDTreeShowHidden=1
-nmap <C-f> :NERDTreeToggle<CR>
+noremap <C-f> :NERDTreeToggle<CR>
 " Exit Vim if NERDTree is the only window left.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
@@ -135,6 +134,7 @@ let g:closetag_regions = {
     \ 'javascriptreact': 'jsxRegion',
     \ }
 "    COC
+nnoremap gd :call CocActionAsync('jumpDefinition')<CR>
 let g:coc_global_extensions = [
 \   'coc-json',
 \   'coc-clangd',

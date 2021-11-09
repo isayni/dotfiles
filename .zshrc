@@ -49,3 +49,7 @@ export EDITOR=vim
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
+
+commit(){
+    git commit -m $1 && git push
+}

@@ -63,7 +63,7 @@ scrolling:
 font:
   normal:
     family: Fira Code
-  size: 14
+  size: 13
 
 cursor:
   style: Block
