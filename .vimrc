@@ -74,11 +74,6 @@ set hlsearch incsearch
 noremap <silent> <leader>l :nohl<CR>
 set smartcase
 
-" Lightline
-set laststatus=2
-set noshowmode
-let g:lightline = {'colorscheme' : 'gruvbox'}
-
 nmap j gj
 nmap k gk
 
@@ -105,6 +100,37 @@ tnoremap <C-k> <C-w>k
 noremap  <C-k> <C-w>k
 tnoremap <C-l> <C-w>l
 noremap  <C-l> <C-w>l
+
+" Lightline
+set laststatus=2
+set noshowmode
+let g:lightline = {
+    \ 'colorscheme' : 'gruvbox',
+    \ 'active': {
+    \   'left': [['mode'],
+    \            ['gitstatus', 'filename']],
+    \   'right':[['lineinfo'],
+    \            ['wordcount'],
+    \            ['fileformat', 'fileencoding', 'filetype']]
+    \ },
+    \ 'component_function': {
+    \   'wordcount': 'LightlineWordCount',
+    \   'gitstatus': 'LightlineGitStatus',
+    \ },
+    \ }
+function LightlineWordCount()
+    if has_key(wordcount(),'visual_words')
+        let g:word_count=wordcount().visual_words."/".wordcount().words " count selected words
+    else
+        let g:word_count=wordcount().cursor_words."/".wordcount().words " or shows words 'so far'
+    endif
+    return g:word_count
+endfunction
+function! LightlineGitStatus() abort
+  let status = get(g:, 'coc_git_status', '')
+  " return status
+  return status
+endfunction
 
 "    easy-align
 noremap gs <Plug>(EasyAlign)
