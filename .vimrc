@@ -22,27 +22,11 @@ filetype plugin indent on
 syntax on
 let mapleader=","
 
-if has("gui_running")
-    set guifont=Inconsolata_SemiCondensed_Mediu:h16:W500:cANSI:qDRAFT
-    " gui options to set only scrollbar visible (no menu/tool bar, scrollbar)
-    set guioptions=ir
-    hi Cursor guifg=white
+if filereadable(expand('~/.vim/scheme.vim'))
+    execute "source" expand('~/.vim/scheme.vim')
+elseif filereadable(expand('~/.vim/scheme-def.vim'))
+    execute "source" expand('~/.vim/scheme-def.vim')
 endif
-
-" SCHEME
-set termguicolors
-set bg=dark
-let g:tokyonight_style = 'night'
-let g:tokyonight_enable_italic = 1
-colorscheme gruvbox
-hi Normal guibg = NONE
-hi Visual guibg =#161616
-hi Visual guifg =#fbf1c7
-set cursorline
-hi CursorLine cterm=NONE guibg=NONE
-" Alacritty
-let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
-let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
 
 set clipboard=unnamedplus
 set noswapfile
@@ -108,7 +92,7 @@ noremap  <C-l> <C-w>l
 set laststatus=2
 set noshowmode
 let g:lightline = {
-    \ 'colorscheme' : 'gruvbox',
+    \ 'colorscheme' : g:scheme,
     \ 'active': {
     \   'left': [['mode'],
     \            ['gitstatus', 'filename']],
@@ -136,7 +120,7 @@ function! LightlineGitStatus() abort
 endfunction
 
 "    easy-align
-noremap gs <Plug>(EasyAlign)
+vmap gs <Plug>(EasyAlign)
 
 "    NERDTree
 let NERDTreeWinSize=20
