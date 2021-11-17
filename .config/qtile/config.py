@@ -232,7 +232,7 @@ main_widgets = [
         padding = 4
     ),
     widget.Image(
-        filename = '~/img/icons/power_button.png',
+        filename = '~/.config/qtile/power_button.png',
         margin = 4,
         mouse_callbacks = {'Button1': lambda: qtile.cmd_spawn("dmenu_power")}
     ),
@@ -326,7 +326,7 @@ focus_on_window_activation = "smart"
 
 wmname = "Qtile"
 
-# Prevent floating windows to go behind the stacked ones
+# Prevent floating windows from going behind the tiled ones
 @hook.subscribe.focus_change
 def float_to_front():
     if qtile.current_window.floating:
