@@ -14,7 +14,6 @@ alias vi='vim'
 alias p='sudo pacman'
 alias py='bpython'
 alias rg='ranger /'
-alias film='mount /home/lenny/YTOW/films && sudo systemctl start sshd'
 alias please='sudo'
 
 bindkey "^[[3~" delete-char
@@ -52,4 +51,7 @@ alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 
 commit(){
     git commit -m $1 && git push
+}
+c(){
+    cd $1 && ls
 }

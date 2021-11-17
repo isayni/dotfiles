@@ -76,6 +76,7 @@ keys = [
     Key([mod, "control"], "r", lazy.restart()),
     Key([mod, "control"], "q", lazy.shutdown()),
     Key([mod], "Escape",       lazy.window.toggle_fullscreen()),
+    Key([mod], "b",            lazy.hide_show_bar("top")),
 
     # Audio
     Key([], "XF86AudioLowerVolume", lazy.spawn('volumecontrol down')),
