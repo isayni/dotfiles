@@ -1,1 +1,4 @@
 __pycache__/
+plugged/
+scheme.vim
+coc-settings.json
