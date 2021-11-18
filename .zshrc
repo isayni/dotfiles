@@ -16,11 +16,33 @@ alias py='bpython'
 alias rg='ranger /'
 alias please='sudo'
 
+bindkey -e
 bindkey "^[[3~" delete-char
 bindkey "^H" backward-kill-word
 bindkey "[3;5~" kill-word
 bindkey "[1;5C" forward-word
 bindkey "[1;5D" backward-word
+
+HISTFILE=~/.cache/zsh/history
+HISTSIZE=1000
+SAVEHIST=1000
+setopt autocd
+unsetopt beep
+
+# these characters are parts of words
+WORDCHARS='*?-.[]~=&;!#$%^(){}<>'
+
+export EDITOR=vim
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
+
+commit(){
+    git commit -m $1 && git push
+}
+c(){
+    cd $1 && ls
+}
 
 # The following lines were added by compinstall
 zstyle ':completion:*' list-colors ''
@@ -33,25 +55,3 @@ zstyle :compinstall filename '/home/lenny/.zshrc'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
-
-HISTFILE=~/.cache/zsh/history
-HISTSIZE=1000
-SAVEHIST=1000
-setopt autocd
-unsetopt beep
-
-# these characters are parts of words
-WORDCHARS='*?-.[]~=&;!#$%^(){}<>'
-
-bindkey -e
-export EDITOR=vim
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
-
-commit(){
-    git commit -m $1 && git push
-}
-c(){
-    cd $1 && ls
-}
