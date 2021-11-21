@@ -21,6 +21,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'maksimr/vim-jsbeautify'
+Plug 'dense-analysis/ale'
 call plug#end()
 
 command RC :e $MYVIMRC
