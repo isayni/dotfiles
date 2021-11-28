@@ -22,11 +22,14 @@ alias rg='ranger /'
 alias please='sudo'
 
 bindkey -e
-bindkey "^[[3~" delete-char
-bindkey "^H" backward-kill-word
+bindkey "^[[3~"   delete-char
+bindkey "^H"      backward-kill-word
 bindkey "[3;5~" kill-word
+bindkey "[3^"   kill-word
 bindkey "[1;5C" forward-word
 bindkey "[1;5D" backward-word
+bindkey "^[Oc"    forward-word
+bindkey "^[Od"    backward-word
 
 HISTFILE=~/.cache/zsh/history
 HISTSIZE=1000
