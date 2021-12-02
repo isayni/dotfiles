@@ -6,7 +6,7 @@
 
     Configuartion file for Qtile window manager.
 """
-import subprocess, os, time
+import subprocess, os
 from typing import List
 
 from libqtile import qtile, bar, layout, widget, hook, extension
@@ -15,7 +15,7 @@ from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
 mod = "mod4"
-bar_size=22
+bar_size = 22
 terminal = guess_terminal()
 
 def init_colors(scheme):
@@ -122,8 +122,6 @@ groups.extend([
     ])
 ])
 
-################################################
-"""LAYOUTS"""
 layout_theme = {
     "margin": 4,
     "border_width": 2,
@@ -140,17 +138,6 @@ floating_theme = {
 }
 layouts = [
     layout.Columns(**layout_theme),
-    # layout.Floating(),
-    # layout.TreeTab(),
-    # layout.Matrix(),
-    # layout.MonadTall(),
-    # layout.MonadWide(),
-    # layout.RatioTile(),
-    # layout.Tile(),
-    # layout.Max(),
-    # layout.Stack(num_stacks=2),
-    # layout.Bsp(),
-    # layout.VerticalTile(),
     layout.Zoomy(**layout_theme),
 ]
 second_screen_layouts = [
@@ -344,7 +331,7 @@ def autostart():
 
 @hook.subscribe.startup
 def start():
-    if(len(qtile.screens) > 1):
+    if len(qtile.screens) > 1:
         qtile.groups[8]._configure(second_screen_layouts, floating_layout, qtile)
 
         qtile.groups_map['1'].cmd_toscreen(0)
