@@ -63,7 +63,7 @@ scrolling:
 font:
   normal:
     family: JetBrains Mono SemiBold
-  size: 13
+  size: 12
 
 cursor:
   style: Block
