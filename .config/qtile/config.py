@@ -82,6 +82,20 @@ keys = [
     Key([], "XF86AudioRaiseVolume", lazy.spawn('volumecontrol up')),
     Key([], "XF86AudioMute",        lazy.spawn('volumecontrol mute')),
 
+    # Spotify
+    Key([], "XF86AudioPlay",        lazy.spawn(
+        'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify '\
+        '/org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause'
+    )),
+    Key([], "XF86AudioPrev",        lazy.spawn(
+        'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify '\
+        '/org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous'
+    )),
+    Key([], "XF86AudioNext",        lazy.spawn(
+        'dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify '\
+        '/org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next'
+    )),
+
     # Spawn
     Key([mod], "Return",     lazy.spawn(terminal)),
     Key([mod], "f",          lazy.spawn("firefox")),
