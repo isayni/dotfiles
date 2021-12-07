@@ -155,7 +155,7 @@ layouts = [
     layout.Zoomy(**layout_theme),
 ]
 second_screen_layouts = [
-    layout.Columns(num_columns=1, **layout_theme)
+    layout.Columns(num_columns=1, insert_position=1, **layout_theme)
 ]
 
 widget_defaults = dict(
