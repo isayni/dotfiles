@@ -83,9 +83,6 @@ vnoremap <S-Tab> <gv
 " map S to global replace
 nnoremap S :%s///g<Left><Left><Left>
 
-" Remove trailing whitespaces on save
-autocmd BufWritePre * %s/\s\+$//e
-
 " remap ctrl+w to ctrl to switch tabs (also for terminal splits)
 tnoremap <C-h> <C-w>h
 noremap  <C-h> <C-w>h
@@ -95,6 +92,27 @@ tnoremap <C-k> <C-w>k
 noremap  <C-k> <C-w>k
 tnoremap <C-l> <C-w>l
 noremap  <C-l> <C-w>l
+
+" Remove trailing whitespaces on save
+autocmd BufWritePre * %s/\s\+$//e
+
+au VimEnter * let g:ex_list={}
+function SmartWindow(func)
+    silent execute "update"
+
+    let l:parent = bufnr('%')
+    let l:file = expand('%')
+
+    if exists("g:ex_list[l:parent]") && bufexists(g:ex_list[l:parent]) && bufwinnr(g:ex_list[l:parent]) != bufwinnr('%')
+        silent execute bufwinnr(g:ex_list[l:parent]) . ' wincmd w'
+        silent execute 'e!'
+        silent execute 'ter ++curwin ' . a:func . ' ' . l:file
+    else
+        silent execute 'botright vert ter ' . a:func . ' ' . l:file
+    endif
+
+    let g:ex_list[l:parent] = bufnr('%')
+endfunction
 
 " Lightline
 set laststatus=2
@@ -154,6 +172,7 @@ let g:closetag_regions = {
     \ 'typescriptreact': 'jsxRegion,tsxRegion',
     \ 'javascriptreact': 'jsxRegion',
     \ }
+
 "    COC
 nnoremap gd :call CocActionAsync('jumpDefinition')<CR>
 let g:coc_global_extensions = [
@@ -181,23 +200,4 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-au VimEnter * let g:ex_list={}
-function SmartWindow(func)
-    " save
-    silent execute "update"
-
-    let l:parent = bufnr('%')
-    let l:file = expand('%')
-
-    if exists("g:ex_list[l:parent]") && bufexists(g:ex_list[l:parent]) && bufwinnr(g:ex_list[l:parent]) != bufwinnr('%')
-        silent execute bufwinnr(g:ex_list[l:parent]) . ' wincmd w'
-        silent execute 'e!'
-        silent execute 'ter ++curwin ' . a:func . ' ' . l:file
-    else
-        silent execute 'botright vert ter ' . a:func . ' ' . l:file
-    endif
-
-    let g:ex_list[l:parent] = bufnr('%')
 endfunction
