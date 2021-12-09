@@ -182,3 +182,22 @@ function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+au VimEnter * let g:ex_list={}
+function SmartWindow(func)
+    " save
+    silent execute "update"
+
+    let l:parent = bufnr('%')
+    let l:file = expand('%')
+
+    if exists("g:ex_list[l:parent]") && bufexists(g:ex_list[l:parent]) && bufwinnr(g:ex_list[l:parent]) != bufwinnr('%')
+        silent execute bufwinnr(g:ex_list[l:parent]) . ' wincmd w'
+        silent execute 'e!'
+        silent execute 'ter ++curwin ' . a:func . ' ' . l:file
+    else
+        silent execute 'botright vert ter ' . a:func . ' ' . l:file
+    endif
+
+    let g:ex_list[l:parent] = bufnr('%')
+endfunction
