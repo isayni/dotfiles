@@ -113,6 +113,13 @@ noremap  <C-k> <C-w>k
 tnoremap <C-l> <C-w>l
 noremap  <C-l> <C-w>l
 
+" tabs navigation
+noremap <Tab> :tabnext<CR>
+noremap <S-Tab> :tabprevious<CR>
+noremap <C-n> :tabnew<CR>
+noremap <Leader>= :vertical resize +15<CR>
+noremap <Leader>- :vertical resize -15<CR>
+
 " Remove trailing whitespaces on save
 autocmd BufWritePre * %s/\s\+$//e
 
@@ -174,6 +181,8 @@ let NERDTreeShowHidden=1
 noremap <C-f> :NERDTreeToggle<CR>
 " Exit Vim if NERDTree is the only window left.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+" Open the existing NERDTree on each new tab.
+autocmd BufWinEnter * if getcmdwintype() == '' | silent NERDTreeMirror | endif
 
 "    OmniSharp
 let g:OmniSharp_server_use_mono = 1
