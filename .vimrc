@@ -114,8 +114,7 @@ tnoremap <C-l> <C-w>l
 noremap  <C-l> <C-w>l
 
 " tabs navigation
-noremap <Tab> :tabnext<CR>
-noremap <S-Tab> :tabprevious<CR>
+noremap <Leader><Tab> :tabnext<CR>
 noremap <C-n> :tabnew<CR>
 noremap <Leader>= :vertical resize +15<CR>
 noremap <Leader>- :vertical resize -15<CR>
