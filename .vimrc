@@ -22,6 +22,7 @@ Plug 'OmniSharp/omnisharp-vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'maksimr/vim-jsbeautify'
 Plug 'dense-analysis/ale'
+Plug 'tpope/vim-fugitive'
 call plug#end()
 
 command RC :e $MYVIMRC
@@ -165,10 +166,9 @@ function LightlineWordCount()
     endif
     return g:word_count
 endfunction
-function! LightlineGitStatus() abort
-  let status = get(g:, 'coc_git_status', '')
-  " return status
-  return status
+
+function LightlineGitStatus()
+  return get(g:, 'coc_git_status', '')
 endfunction
 
 "    easy-align
