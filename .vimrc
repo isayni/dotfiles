@@ -17,6 +17,8 @@ Plug 'preservim/nerdtree'
 Plug 'preservim/nerdcommenter'
 Plug 'tpope/vim-surround'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'junegunn/vim-easy-align'
@@ -122,6 +124,8 @@ noremap <Leader>- :vertical resize -15<CR>
 
 " Remove trailing whitespaces on save
 autocmd BufWritePre * %s/\s\+$//e
+
+nnoremap <Leader>f :GFiles<CR>
 
 au VimEnter * let g:ex_list={}
 function SmartWindow(func)
