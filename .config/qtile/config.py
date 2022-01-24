@@ -127,7 +127,7 @@ for i in groups:
 
 groups.extend([
     ScratchPad('scratchpad', [
-        DropDown('term', 'alacritty -o background_opacity=1',
+        DropDown('term', 'alacritty -o window.opacity=1',
                  opacity=1,
                  width=0.95,
                  x=0.025,
