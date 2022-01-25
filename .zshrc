@@ -4,8 +4,12 @@
 #    / /\__ \ | | | | | (__
 #   /___|___/_| |_|_|  \___|
 #
+autoload -Uz vcs_info
+precmd() {vcs_info}
+zstyle ':vcs_info:git:*' formats ' (%b)'
+setopt PROMPT_SUBST
 
-PROMPT='%B%F{red}%~ %F{cyan}>%f%b '
+PROMPT='%B%F{red}%~%b%F{yellow}${vcs_info_msg_0_} %B%F{cyan}>%b%f '
 
 alias ls='lsd'
 alias l='ls'
