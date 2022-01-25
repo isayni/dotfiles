@@ -19,6 +19,7 @@ Plug 'tpope/vim-surround'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'stsewd/fzf-checkout.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'OmniSharp/omnisharp-vim'
 Plug 'junegunn/vim-easy-align'
@@ -125,7 +126,7 @@ noremap <Leader>- :vertical resize -15<CR>
 " Remove trailing whitespaces on save
 autocmd BufWritePre * %s/\s\+$//e
 
-nnoremap <Leader>f :GFiles<CR>
+nnoremap <C-f> :GFiles<CR>
 
 au VimEnter * let g:ex_list={}
 function SmartWindow(func)
@@ -181,7 +182,7 @@ vmap gs <Plug>(EasyAlign)
 "    NERDTree
 let NERDTreeWinSize=20
 let NERDTreeShowHidden=1
-noremap <C-f> :NERDTreeToggle<CR>
+noremap <Leader>f :NERDTreeToggle<CR>
 " Exit Vim if NERDTree is the only window left.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 " Open the existing NERDTree on each new tab.
