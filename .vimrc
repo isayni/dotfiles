@@ -146,6 +146,15 @@ function SmartWindow(func)
     let g:ex_list[l:parent] = bufnr('%')
 endfunction
 
+command -nargs=1 Rename :call Rename(<f-args>)
+
+function Rename(t)
+    let l:old = expand('%')
+    silent execute "saveas " . a:t
+    silent execute "!rm " . l:old
+    redraw!
+endfunction
+
 " Lightline
 set laststatus=2
 set noshowmode
