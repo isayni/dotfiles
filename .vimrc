@@ -26,6 +26,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'maksimr/vim-jsbeautify'
 Plug 'dense-analysis/ale'
 Plug 'tpope/vim-fugitive'
+Plug 'SirVer/ultisnips'
 call plug#end()
 
 command RC :e $MYVIMRC
@@ -200,6 +201,9 @@ autocmd BufWinEnter * if getcmdwintype() == '' | silent NERDTreeMirror | endif
 "    OmniSharp
 let g:OmniSharp_server_use_mono = 1
 
+" UltiSnips
+let g:UltiSnipsEditSplit="vertical"
+
 "    close-tag
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml'
 let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
@@ -232,7 +236,8 @@ let g:coc_global_extensions = [
 \   'coc-sh',
 \   'coc-tsserver',
 \   'coc-xml',
-\   'coc-yaml'
+\   'coc-yaml',
+\   'coc-snippets',
 \   ]
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
