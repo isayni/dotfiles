@@ -137,7 +137,7 @@ groups.extend([
 ])
 
 layout_theme = {
-    "margin": 4,
+    "margin": 2,
     "border_width": 2,
     "border_focus": colors["yellow"],
     "border_normal": colors["background"],
