@@ -27,6 +27,7 @@ Plug 'maksimr/vim-jsbeautify'
 Plug 'dense-analysis/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'SirVer/ultisnips'
+Plug 'junegunn/goyo.vim'
 call plug#end()
 
 command RC :e $MYVIMRC
@@ -40,6 +41,11 @@ if filereadable(expand('~/.vim/scheme.vim'))
 else
     " SCHEME
     let g:scheme="gruvbox"
+    autocmd ColorScheme * hi Normal guibg=NONE
+    autocmd ColorScheme * hi Visual guibg=#161616
+    autocmd ColorScheme * hi Visual guifg=#fbf1c7
+    autocmd ColorScheme * hi StatusLine cterm=NONE
+    autocmd ColorScheme * hi StatusLineNC cterm=NONE
     colorscheme gruvbox
     if has("gui_running")
         set guifont=Inconsolata_SemiCondensed_Mediu:h16:W500:cANSI:qDRAFT
@@ -51,9 +57,6 @@ else
     set bg=dark
     let g:tokyonight_style = 'night'
     let g:tokyonight_enable_italic = 1
-    hi Normal guibg = NONE
-    hi Visual guibg =#161616
-    hi Visual guifg =#fbf1c7
     set cursorline
     hi CursorLine cterm=NONE guibg=NONE
     " Alacritty
