@@ -27,7 +27,9 @@ Plug 'maksimr/vim-jsbeautify'
 Plug 'dense-analysis/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'SirVer/ultisnips'
+Plug 'lervag/vimtex'
 Plug 'junegunn/goyo.vim'
+Plug 'xuhdev/vim-latex-live-preview'
 call plug#end()
 
 command RC :e $MYVIMRC
@@ -105,8 +107,8 @@ vnoremap K :m '<-2<CR>gv=gv
 vnoremap J :m '>+1<CR>gv=gv
 
 " tab lines in visual mode
-vnoremap <Tab> >gv
-vnoremap <S-Tab> <gv
+vmap > >gv
+vmap < <gv
 
 " map S to global replace
 nnoremap S :%s///g<Left><Left><Left>
@@ -204,8 +206,11 @@ autocmd BufWinEnter * if getcmdwintype() == '' | silent NERDTreeMirror | endif
 "    OmniSharp
 let g:OmniSharp_server_use_mono = 1
 
-" UltiSnips
+"    UltiSnips
 let g:UltiSnipsEditSplit="vertical"
+
+"    vim-latex-live-preview
+let g:livepreview_previewer = 'zathura'
 
 "    close-tag
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml'
@@ -241,6 +246,7 @@ let g:coc_global_extensions = [
 \   'coc-xml',
 \   'coc-yaml',
 \   'coc-snippets',
+\   'coc-vimtex',
 \   ]
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
