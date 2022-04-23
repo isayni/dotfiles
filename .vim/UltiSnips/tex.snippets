@@ -1,0 +1,55 @@
+snippet base "basic LateX"
+\documentclass[12pt,a4paper]{article}
+
+\title{$1}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\end{document}
+endsnippet
+snippet tutek "tutorial template"
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{graphicx}
+\usepackage[margin=10mm]{geometry}
+\usepackage{xcolor}
+
+\title{$1}
+\date{}
+
+\newcommand{\link}[1]{\textcolor{blue}{\underline{#1}}}
+\newcommand{\code}[1]{\colorbox{gray}{\textit{\`{}#1\`{}}}}
+
+\begin{document}
+
+\maketitle
+
+\section{$2}
+
+\end{document}
+endsnippet
+snippet enum "enumerate"
+\begin{enumerate}
+\item $0
+\end{enumerate}
+endsnippet
+snippet item "item"
+\item $0
+endsnippet
+snippet sec "section"
+\section*{$0}
+endsnippet
+snippet ssec "subsection"
+\subsection*{$0}
+endsnippet
+snippet beg "begin"
+\begin{$1}
+$0
+\end{$1}
+endsnippet
+snippet br "vspace{5mm}"
+\vspace{5mm}
+endsnippet
