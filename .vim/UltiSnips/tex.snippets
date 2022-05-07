@@ -5,29 +5,23 @@ snippet base "basic LateX"
 \date{}
 
 \begin{document}
-
 \maketitle
 
 \end{document}
 endsnippet
 snippet tutek "tutorial template"
-\documentclass[12pt,a4paper]{article}
+\documentclass[12pt]{article}
 
 \usepackage{graphicx}
-\usepackage[margin=10mm]{geometry}
-\usepackage{xcolor}
+\usepackage{../tutorial}
 
 \title{$1}
 \date{}
 
-\newcommand{\link}[1]{\textcolor{blue}{\underline{#1}}}
-\newcommand{\code}[1]{\colorbox{gray}{\textit{\`{}#1\`{}}}}
-
 \begin{document}
-
 \maketitle
 
-\section{$2}
+\section*{$2}
 
 \end{document}
 endsnippet
