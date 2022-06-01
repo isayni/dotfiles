@@ -14,9 +14,11 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen, ScratchPad, 
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
-mod = "mod4"
 bar_size = 22
-terminal = guess_terminal()
+mod = "mod4"
+terminal = "alacritty" # guess_terminal()
+browser = "firefox"
+filemanager = "pcmanfm-qt"
 
 def init_colors(scheme):
     if scheme == "tokyonight":
@@ -98,8 +100,8 @@ keys = [
 
     # Spawn
     Key([mod], "Return",     lazy.spawn(terminal)),
-    Key([mod], "f",          lazy.spawn("firefox")),
-    Key([mod], "e",          lazy.spawn("pcmanfm-qt")),
+    Key([mod], "f",          lazy.spawn(browser)),
+    Key([mod], "e",          lazy.spawn(filemanager)),
     Key([mod], "r",          lazy.spawn("dmenu_run")),
     Key([mod, "shift"], "r", lazy.spawn("dmenu_sudo")),
     Key([mod], "F1",         lazy.spawn("dmenu_confedit")),
@@ -107,7 +109,7 @@ keys = [
     Key([mod], "F3",         lazy.spawn("dmenu_unicode")),
     Key([], "Scroll_Lock",   lazy.spawn("clip2qr")),
     Key([], "Print",         lazy.spawn("screenshot")),
-    Key([mod], "z",          lazy.spawn('pavucontrol')),
+    Key([mod], "z",          lazy.spawn("pavucontrol")),
     Key([], 'F1',            lazy.run_extension(extension.WindowList(dmenu_font = 'JetBrains Mono'))),
 
     # Scratchpads
