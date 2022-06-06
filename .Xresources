@@ -1,0 +1,7 @@
+Xcursor.size: 24
+dmenu.font: Inconsolata black:size=13
+dmenu.background:     #242424
+dmenu.foreground:     #fbf1c7
+dmenu.selbackground:  #383535
+dmenu.selforeground:  #689d6a
+dmenu.sudoforeground: #fb4934
