@@ -56,6 +56,9 @@ commit(){
 c(){
     cd $1 && ls
 }
+csv() {
+    watch -n 2 column -t -s, < "$@"
+}
 
 # The following lines were added by compinstall
 zstyle ':completion:*' list-colors ''
