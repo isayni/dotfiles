@@ -23,7 +23,6 @@ alias clip='xclip -sel clipboard'
 alias vi='vim'
 alias p='sudo pacman'
 alias py='bpython'
-alias rg='ranger /'
 alias please='sudo'
 
 bindkey -e
@@ -50,14 +49,8 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
 
-commit(){
-    git commit -m $1 && git push
-}
 c(){
     cd $1 && ls
-}
-csv() {
-    watch -n 2 column -t -s, < "$@"
 }
 
 # The following lines were added by compinstall
