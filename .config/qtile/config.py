@@ -14,14 +14,16 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen, ScratchPad, 
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
-bar_size = 22
-mod = "mod4"
-terminal = "alacritty" # guess_terminal()
-browser = "firefox"
-filemanager = "pcmanfm-qt"
+bar_size     = 22
+colorscheme  = "gruvbox"
+netinterface = "enp34s0"
+mod          = "mod4"
+terminal     = "alacritty" # guess_terminal()
+browser      = "firefox"
+filemanager  = "pcmanfm-qt"
 
-def init_colors(scheme):
-    if scheme == "tokyonight":
+def init_colors():
+    if colorscheme == "tokyonight":
         return {
             "background": '#1a1b26', #0
             "foreground": '#ccd0f0', #1
@@ -34,7 +36,7 @@ def init_colors(scheme):
             "cyan":       '#0db9d7', #8
             "white":      '#acb0d0', #9
         }
-    if scheme == "gruvbox":
+    if colorscheme == "gruvbox":
         return {
             "background": '#242424', #0
             "foreground": '#fbf1c7', #1
@@ -47,7 +49,7 @@ def init_colors(scheme):
             "cyan":       '#8ec07c', #8
             "white":      '#ebdbb2', #9
         }
-colors = init_colors("gruvbox")
+colors = init_colors()
 
 keys = [
     # Switch between windows
@@ -130,10 +132,10 @@ for i in groups:
 groups.extend([
     ScratchPad('scratchpad', [
         DropDown('term', 'alacritty -o window.opacity=1',
-                 opacity=1,
-                 width=0.95,
-                 x=0.025,
-                 y=0.006
+            opacity=1,
+            width=0.95,
+            x=0.025,
+            y=0.006
         ),
     ])
 ])
@@ -211,7 +213,7 @@ main_widgets = [
         padding = 4
     ),
     widget.Net(
-        interface = "enp34s0",
+        interface = netinterface,
         format = '⬇{down} ⬆{up}',
         foreground = colors["blue"]
     ),
