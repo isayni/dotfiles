@@ -104,15 +104,15 @@ keys = [
     Key([mod], "Return",     lazy.spawn(terminal)),
     Key([mod], "f",          lazy.spawn(browser)),
     Key([mod], "e",          lazy.spawn(filemanager)),
-    Key([mod], "r",          lazy.spawn("dmenu_run")),
-    Key([mod, "shift"], "r", lazy.spawn("dmenu_sudo")),
+    Key([mod], "r",          lazy.spawn("rofi -show run")),
+    Key([mod, "shift"], "r", lazy.spawn("rofi -show run -run-command 'gksudo {cmd}'")),
     Key([mod], "F1",         lazy.spawn("dmenu_confedit")),
     Key([mod], "F2",         lazy.spawn("color-picker.sh")),
     Key([mod], "F3",         lazy.spawn("dmenu_unicode")),
     Key([], "Scroll_Lock",   lazy.spawn("clip2qr")),
     Key([], "Print",         lazy.spawn("screenshot")),
     Key([mod], "z",          lazy.spawn("pavucontrol")),
-    Key([], 'F1',            lazy.run_extension(extension.WindowList(dmenu_font = 'JetBrains Mono'))),
+    Key([], 'F1',            lazy.spawn("rofi -show window")),
 
     # Scratchpads
     Key([mod], "x", lazy.group['scratchpad'].dropdown_toggle('term')),
