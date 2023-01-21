@@ -108,7 +108,7 @@ keys = [
     Key([mod, "shift"], "r", lazy.spawn("rofi -show drun -run-command 'gksudo {cmd}'")),
     Key([mod], "F1",         lazy.spawn("dmenu_confedit")),
     Key([mod], "F2",         lazy.spawn("color-picker.sh")),
-    Key([mod], "F3",         lazy.spawn("dmenu_unicode")),
+    Key([mod], "F3",         lazy.spawn("dmenu_movie")),
     Key([mod], "F4",         lazy.spawn("dmenu_vm")),
     Key([], "Scroll_Lock",   lazy.spawn("clip2qr")),
     Key([], "Print",         lazy.spawn("screenshot")),

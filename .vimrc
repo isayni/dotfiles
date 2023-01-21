@@ -204,6 +204,7 @@ let g:OmniSharp_server_use_mono = 1
 
 "    UltiSnips
 let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsExpandTrigger = '<f5>'
 
 "    vim-latex-live-preview
 let g:livepreview_previewer = 'zathura'
@@ -245,11 +246,13 @@ let g:coc_global_extensions = [
 \   'coc-vimtex',
 \   ]
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-function! s:check_back_space() abort
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
