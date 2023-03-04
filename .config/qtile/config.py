@@ -117,6 +117,7 @@ keys = [
 
     # Scratchpads
     Key([mod], "x", lazy.group['scratchpad'].dropdown_toggle('term')),
+    Key([mod], "y", lazy.group['chatgpt'].dropdown_toggle('term')),
 ]
 
 groups = [Group(i) for i in "123456789"]
@@ -133,6 +134,14 @@ for i in groups:
 groups.extend([
     ScratchPad('scratchpad', [
         DropDown('term', 'alacritty -o window.opacity=1',
+            opacity=1,
+            width=0.95,
+            x=0.025,
+            y=0.006
+        ),
+    ]),
+    ScratchPad('chatgpt', [
+        DropDown('term', 'alacritty -o window.opacity=1 -e chatgpt',
             opacity=1,
             width=0.95,
             x=0.025,
