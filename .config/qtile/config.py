@@ -21,6 +21,7 @@ mod          = "mod4"
 terminal     = "alacritty" # guess_terminal()
 browser      = "firefox"
 filemanager  = "pcmanfm-qt"
+margin       = 4
 
 def init_colors():
     if colorscheme == "tokyonight":
@@ -151,12 +152,12 @@ groups.extend([
 ])
 
 layout_theme = {
-    "margin": 14,
+    "margin": margin,
     "border_width": 2,
-    "margin_on_single": 0,
-    "border_focus": colors["yellow"],
+    "margin_on_single": margin,
+    "border_focus": colors["red"],
     "border_normal": colors["background"],
-    "border_focus_stack": colors["red"],
+    "border_focus_stack": colors["cyan"],
     "border_normal_stack": colors["background"]
 }
 floating_theme = {
@@ -292,14 +293,14 @@ screens = [
         top=bar.Bar(
             main_widgets,
             size=bar_size,
-            margin=[4, 6, 2, 6]
+            margin=[margin, margin, 0, margin]
         ),
     ),
     Screen(
         top=bar.Bar(
             second_screen_widgets,
             size=bar_size,
-            margin=[4, 6, 2, 6]
+            margin=[margin, margin, 0, margin]
         ),
     ),
 ]
