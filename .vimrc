@@ -244,7 +244,9 @@ let g:coc_global_extensions = [
 \   'coc-yaml',
 \   'coc-snippets',
 \   'coc-vimtex',
+\   '@yaegassy/coc-ansible',
 \   ]
+inoremap <silent><expr> <c-@> coc#refresh()
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1) :
       \ CheckBackspace() ? "\<Tab>" :
@@ -256,3 +258,6 @@ function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+let g:coc_filetype_map = {
+  \ 'yaml.ansible': 'ansible',
+  \ }
