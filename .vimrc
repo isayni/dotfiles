@@ -38,9 +38,9 @@ filetype plugin indent on
 syntax on
 let mapleader=","
 
-if filereadable(expand('~/.vim/scheme.vim'))
-    execute "source" expand('~/.vim/scheme.vim')
-else
+for f in split(globpath(expand('~/.vim/'), '*.vim'), '\n') | execute 'source ' . f | endfor
+
+if !filereadable(expand('~/.vim/scheme.vim'))
     " SCHEME
     let g:scheme="gruvbox"
     autocmd ColorScheme * hi Normal guibg=NONE
