@@ -62,7 +62,6 @@ if !filereadable(expand('~/.vim/scheme.vim'))
     endif
 endif
 
-set clipboard=unnamedplus
 set noswapfile
 set wrap
 set scrolloff=3
