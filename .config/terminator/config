@@ -1,0 +1,37 @@
+[global_config]
+  inactive_color_offset = 0.9032258064516129
+[keybindings]
+  zoom_in = <Primary>equal
+  zoom_out = <Primary>minus
+  new_tab = <Primary>t
+  cycle_next = <Primary>Page_Up
+  cycle_prev = <Primary>Page_Down
+  go_up = <Super>k
+  go_down = <Super>j
+  go_left = <Super>h
+  go_right = <Super>l
+  split_horiz = <Super>minus
+  split_vert = <Super>Return
+  resize_up = <Primary><Super>k
+  resize_down = <Primary><Super>j
+  resize_left = <Primary><Super>h
+  resize_right = <Primary><Super>l
+  next_tab = <Primary>Tab
+  prev_tab = <Primary><Shift>Tab
+[profiles]
+  [[default]]
+    visible_bell = True
+    backspace_binding = automatic
+    delete_binding = automatic
+    font = Fira Code Medium 15
+    scrollbar_position = hidden
+    use_system_font = False
+[layouts]
+  [[default]]
+    [[[window0]]]
+      type = Window
+      parent = ""
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+[plugins]
