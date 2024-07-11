@@ -25,6 +25,8 @@ alias vi='vim'
 alias p='sudo pacman'
 alias py='bpython'
 alias please='sudo'
+alias shut='shutdown --poweroff now'
+alias v='volumecontrol'
 
 bindkey -e
 bindkey "^[[3~"   delete-char
