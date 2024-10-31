@@ -71,6 +71,7 @@ set shortmess=filnxtoOsc
 set encoding=utf-8
 set backspace=start,eol,indent
 set tabstop=4 softtabstop=4 shiftwidth=4
+set ttimeoutlen=0
 set autoindent expandtab smartindent
 set nu rnu
 set linebreak
