@@ -1,1 +1,1 @@
-nnoremap <silent> <F5> :call SmartWindow("python")<CR>
+nnoremap <silent> <F5> :call SmartWindow("python %:p")<CR>

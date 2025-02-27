@@ -140,9 +140,9 @@ function SmartWindow(func)
     if exists("g:ex_list[l:parent]") && bufexists(g:ex_list[l:parent]) && bufwinnr(g:ex_list[l:parent]) != bufwinnr('%')
         silent execute bufwinnr(g:ex_list[l:parent]) . ' wincmd w'
         silent execute 'e!'
-        silent execute 'ter ++curwin ' . a:func . ' ' . l:file
+        silent execute 'ter ++curwin ' . a:func
     else
-        silent execute 'botright vert ter ' . a:func . ' ' . l:file
+        silent execute 'botright vert ter ' . a:func
     endif
 
     let g:ex_list[l:parent] = bufnr('%')
@@ -242,7 +242,6 @@ let g:coc_global_extensions = [
 \   'coc-tsserver',
 \   'coc-xml',
 \   'coc-yaml',
-\   'coc-snippets',
 \   'coc-vimtex',
 \   '@yaegassy/coc-ansible',
 \   ]
@@ -261,3 +260,5 @@ endfunction
 let g:coc_filetype_map = {
   \ 'yaml.ansible': 'ansible',
   \ }
+
+let g:ale_virtualtext_cursor = 'current'

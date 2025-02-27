@@ -20,7 +20,7 @@ netinterface = "enp34s0"
 mod          = "mod4"
 terminal     = "alacritty" # guess_terminal()
 browser      = "firefox"
-filemanager  = "pcmanfm-qt"
+filemanager  = "nautilus"
 margin       = 4
 
 def init_colors():
