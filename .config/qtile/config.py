@@ -19,8 +19,8 @@ colorscheme  = "gruvbox"
 netinterface = "enp34s0"
 mod          = "mod4"
 terminal     = "alacritty" # guess_terminal()
-browser      = "firefox"
-filemanager  = "nautilus"
+browser      = "librewolf"
+filemanager  = "pcmanfm"
 margin       = 4
 
 def init_colors():
@@ -39,9 +39,11 @@ def init_colors():
         }
     if colorscheme == "gruvbox":
         return {
-            "background": '#242424', #0
+            # "background": '#242424', #0
+            "background": '#101010', #0
             "foreground": '#fbf1c7', #1
-            "black":      '#383535', #2
+            # "black":      '#383535', #2
+            "black":      '#262626', #2
             "red":        '#fb4934', #3
             "green":      '#b8bb26', #4
             "yellow":     '#fabd2f', #5
@@ -295,6 +297,8 @@ screens = [
             size=bar_size,
             margin=[margin, margin, 0, margin]
         ),
+        wallpaper="/usr/share/wallpapers/dt/0142.jpg",
+        wallpaper_mode="fill"
     ),
     Screen(
         top=bar.Bar(
@@ -302,6 +306,8 @@ screens = [
             size=bar_size,
             margin=[margin, margin, 0, margin]
         ),
+        wallpaper="/usr/share/wallpapers/dt/0142.jpg",
+        wallpaper_mode="fill"
     ),
 ]
 

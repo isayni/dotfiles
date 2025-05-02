@@ -26,6 +26,7 @@ alias py='bpython'
 alias please='sudo'
 alias shut='shutdown --poweroff now'
 alias v='volumecontrol'
+alias rg='ranger'
 
 bindkey -e
 bindkey "^[[3~"   delete-char
