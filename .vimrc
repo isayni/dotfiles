@@ -30,7 +30,31 @@ Plug 'SirVer/ultisnips'
 Plug 'lervag/vimtex'
 Plug 'junegunn/goyo.vim'
 Plug 'xuhdev/vim-latex-live-preview'
+Plug 'pearofducks/ansible-vim'
+Plug 'airblade/vim-rooter'
+Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
+
+" BINDS
+" -- normal
+" leader f - toggle NERDTree
+" leader r - refresh NERDTree position
+" leader l - clear highlight
+" leader <Tab> - switch tab
+" leader -     - resize pane down
+" leader =     - resize pane up
+" S        - global replace
+" gd       - COC jump to definition
+" `        - fold
+"
+" Ctrl-F   - FZF git files
+" -- visual
+" gs - easy-align
+"
+" COMMANDS
+" :Rg - FZF ripgrep git project
+" :GBranches - FZF git branches
+" :GTags - FZF git tags
 
 command RC :e $MYVIMRC
 
@@ -43,6 +67,7 @@ for f in split(globpath(expand('~/.vim/'), '*.vim'), '\n') | execute 'source ' .
 if !filereadable(expand('~/.vim/scheme.vim'))
     " SCHEME
     let g:scheme="gruvbox"
+    " set background=light
     autocmd ColorScheme * hi Normal guibg=NONE
     autocmd ColorScheme * hi Visual guibg=#161616
     autocmd ColorScheme * hi Visual guifg=#fbf1c7
@@ -50,6 +75,7 @@ if !filereadable(expand('~/.vim/scheme.vim'))
     autocmd ColorScheme * hi StatusLineNC cterm=NONE
     colorscheme gruvbox
     set termguicolors
+    set cursorline
     set bg=dark
     " Alacritty
     let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
@@ -79,8 +105,6 @@ set nobackup nowritebackup
 set updatetime=500
 set mouse=a
 set autochdir
-" fix mouse issues when using Alacritty
-set ttymouse=sgr
 
 " folding
 set foldmethod=indent
@@ -157,7 +181,7 @@ function Rename(t)
     redraw!
 endfunction
 
-" Lightline
+"    Lightline
 set laststatus=2
 set noshowmode
 let g:lightline = {
@@ -193,11 +217,33 @@ vmap gs <Plug>(EasyAlign)
 "    NERDTree
 let NERDTreeWinSize=20
 let NERDTreeShowHidden=1
-noremap <Leader>f :NERDTreeToggle<CR>
 " Exit Vim if NERDTree is the only window left.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 " Open the existing NERDTree on each new tab.
 autocmd BufWinEnter * if getcmdwintype() == '' | silent NERDTreeMirror | endif
+
+" Check if NERDTree is open or active
+function! IsNERDTreeOpen()
+  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+endfunction
+
+" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
+" file, and we're not in vimdiff
+function! SyncTree()
+  if &modifiable && IsNERDTreeOpen() && strlen(expand('%')) > 0 && !&diff
+    NERDTreeFind
+    wincmd p
+  endif
+endfunction
+" Highlight currently open buffer in NERDTree
+nmap <Leader>r :call SyncTree()<CR>
+
+function! ToggleNerdTree()
+  set eventignore=BufEnter
+  NERDTreeToggle
+  set eventignore=
+endfunction
+nmap <Leader>f :call ToggleNerdTree()<CR>
 
 "    OmniSharp
 let g:OmniSharp_server_use_mono = 1
@@ -243,6 +289,7 @@ let g:coc_global_extensions = [
 \   'coc-xml',
 \   'coc-yaml',
 \   'coc-vimtex',
+\   'coc-snippets',
 \   '@yaegassy/coc-ansible',
 \   ]
 inoremap <silent><expr> <c-@> coc#refresh()
@@ -261,4 +308,45 @@ let g:coc_filetype_map = {
   \ 'yaml.ansible': 'ansible',
   \ }
 
+"    ALE
 let g:ale_virtualtext_cursor = 'current'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_yaml_yamllint_options = '-c ~/.yamllint.yml'
+
+"    WSL yank support
+let s:clip = '/mnt/c/Windows/System32/clip.exe'  " change this path according to your mount point
+if executable(s:clip)
+    augroup WSLYank
+        autocmd!
+        autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
+    augroup END
+endif
+
+"    FZF
+" include hidden directories except .git
+command! -bang -nargs=* Rg
+    \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case --hidden --glob=\!.git -- ".fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
+
+let g:fzf_colors = {
+\ 'fg':      ['fg', 'Comment'],
+\ 'bg':      ['bg', 'Normal'],
+\ 'hl':      ['fg', 'Statement'],
+\ 'fg+':     ['fg', 'Normal'],
+\ 'bg+':     ['bg', 'CursorLine'],
+\ 'hl+':     ['fg', 'Statement'],
+\ 'info':    ['fg', 'PreProc'],
+\ 'border':  ['fg', 'Normal'],
+\ 'query':   ['fg', 'Normal'],
+\ 'prompt':  ['fg', 'Conditional'],
+\ 'pointer': ['fg', 'Exception'],
+\ 'marker':  ['fg', 'Keyword'],
+\ 'spinner': ['fg', 'Label'],
+\ 'header':  ['fg', 'Comment'],
+\ 'preview-fg':      ['fg', 'Normal'],
+\ 'preview-bg':      ['bg', 'Normal'] }
+
+let g:fzf_action = {
+  \ 'ctrl-i': 'split',
+  \ 'ctrl-s': 'vsplit' }
+
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
