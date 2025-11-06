@@ -1,0 +1,446 @@
+-- ~/.config/nvim/init.lua
+
+-- -----------------------------------------------------------------------------
+-- # LAZY.NVIM BOOTSTRAP
+-- -----------------------------------------------------------------------------
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+    vim.fn.system({
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "https://github.com/folke/lazy.nvim.git",
+        "--branch=stable",
+        lazypath,
+    })
+end
+vim.opt.rtp:prepend(lazypath)
+
+-- -----------------------------------------------------------------------------
+-- # GENERAL OPTIONS
+-- -----------------------------------------------------------------------------
+vim.g.mapleader = "," -- Set the leader key to comma
+
+-- Core editor behavior
+vim.opt.encoding = "utf-8"
+vim.opt.winborder = 'rounded'
+vim.opt.mouse = "a"           -- Enable mouse support
+vim.opt.swapfile = false      -- Disable swap files
+vim.opt.backup = false        -- Disable backup files
+vim.opt.writebackup = false   -- Disable write backup files
+vim.opt.undofile = true       -- Enable persistent undo
+vim.opt.updatetime = 300      -- Faster update time for plugins
+vim.opt.shortmess:append("c") -- Don't show "pattern not found" messages
+vim.opt.hidden = true         -- Allow hidden buffers
+vim.opt.termguicolors = true  -- Enable true color support
+vim.opt.autoindent = true     -- Auto-indent new lines
+vim.opt.smartindent = true    -- Be smart about it
+vim.opt.expandtab = true      -- Use spaces instead of tabs
+vim.opt.tabstop = 4           -- Number of spaces a tab is
+vim.opt.softtabstop = 4       -- Number of spaces to insert/delete with tab key
+vim.opt.shiftwidth = 4        -- Number of spaces to use for auto-indent
+vim.opt.wrap = true           -- Wrap long lines
+vim.opt.linebreak = true      -- Wrap lines at convenient places
+vim.opt.scrolloff = 5         -- Keep 5 lines of context around the cursor
+vim.opt.cursorline = true     -- Highlight the current line
+vim.opt.number = true         -- Show line numbers
+vim.opt.relativenumber = true -- Show relative line numbers
+vim.opt.splitright = true     -- New vertical splits go to the right
+vim.opt.splitbelow = true     -- New horizontal splits go below
+vim.opt.hlsearch = true       -- Highlight search results
+vim.opt.incsearch = true      -- Show search results as you type
+vim.opt.smartcase = true      -- Ignore case when searching for all lowercase
+vim.opt.signcolumn = "yes"    -- Always show the sign column to prevent jitter
+vim.opt.foldmethod = "indent" -- Fold based on indentation
+vim.opt.foldlevel = 99        -- Start with all folds open
+
+vim.diagnostic.config({
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = '✘',
+            [vim.diagnostic.severity.WARN] = '⚑',
+            [vim.diagnostic.severity.HINT] = '▲',
+            [vim.diagnostic.severity.INFO] = '»',
+        },
+    },
+    float = {
+        border = "rounded",
+    },
+})
+
+-- custom filetype detection
+-- vim.filetype.add({
+--     pattern = {
+--         ['.*/%.github[%w/]+workflows[%w/]+.*%.ya?ml'] = 'yaml.github',
+--     },
+-- })
+
+-- -----------------------------------------------------------------------------
+-- # KEYMAPS
+-- -----------------------------------------------------------------------------
+local keymap_opts = { noremap = true, silent = true }
+
+-- Clear search highlight
+vim.keymap.set("n", "<leader>l", ":nohl<CR>", keymap_opts)
+
+-- Line wrapping and navigation
+vim.keymap.set("n", "j", "gj", { noremap = true })
+vim.keymap.set("n", "k", "gk", { noremap = true })
+vim.keymap.set("n", "Y", "y$", { noremap = true }) -- Yank to end of line
+
+-- Move lines up/down in visual mode
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", keymap_opts)
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", keymap_opts)
+
+-- Indent in visual mode
+vim.keymap.set("v", ">", ">gv", keymap_opts)
+vim.keymap.set("v", "<", "<gv", keymap_opts)
+
+-- Global replace
+vim.keymap.set("n", "S", ":%s///g<Left><Left>", { noremap = true, silent = false })
+
+-- Window navigation
+vim.keymap.set("n", "<C-h>", "<C-w>h", keymap_opts)
+vim.keymap.set("n", "<C-j>", "<C-w>j", keymap_opts)
+vim.keymap.set("n", "<C-k>", "<C-w>k", keymap_opts)
+vim.keymap.set("n", " <C-l>", "<C-w>l", keymap_opts)
+
+-- Window resizing
+vim.keymap.set("n", "<leader>=", ":vertical resize +5<CR>", keymap_opts)
+vim.keymap.set("n", "<leader>-", ":vertical resize -5<CR>", keymap_opts)
+
+-- Tab navigation
+vim.keymap.set("n", "<Leader><Tab>", ":tabnext<CR>", keymap_opts)
+vim.keymap.set("n", "<Leader><S-Tab>", ":tabprevious<CR>", keymap_opts)
+vim.keymap.set("n", "<C-n>", ":tabnew<CR>", keymap_opts)
+
+-- Folding
+vim.keymap.set("n", "`", "za", keymap_opts) -- Toggle fold
+
+-- LSP
+vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>")
+
+-- -----------------------------------------------------------------------------
+-- # AUTOCMD (Automations)
+-- -----------------------------------------------------------------------------
+-- Remove trailing whitespace on save
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*",
+    command = [[%s/\s\+$//e]],
+})
+
+-- WSL Yank support
+if vim.fn.executable("/mnt/c/Windows/System32/clip.exe") then
+    vim.api.nvim_create_autocmd("TextYankPost", {
+        group = vim.api.nvim_create_augroup("WSLYank", { clear = true }),
+        pattern = "*",
+        callback = function()
+            vim.fn.system("/mnt/c/Windows/System32/clip.exe", vim.fn.getreg('"'))
+        end,
+    })
+end
+
+-- Auto rooter
+local root_names = { '.git' } -- file names indicating root directory
+local root_cache = {}
+local set_root = function()
+    local path = vim.api.nvim_buf_get_name(0) -- Get directory path to start search from
+    if path == '' then return end
+    path = vim.fs.dirname(path)
+    local root = root_cache[path]
+    if root == nil then -- Try cache and resort to searching upward for root directory
+        local root_file = vim.fs.find(root_names, { path = path, upward = true })[1]
+        if root_file == nil then return end
+        root = vim.fs.dirname(root_file)
+        root_cache[path] = root
+    end
+    vim.fn.chdir(root) -- Set current directory
+end
+local root_augroup = vim.api.nvim_create_augroup('MyAutoRoot', {})
+vim.api.nvim_create_autocmd('BufEnter', { group = root_augroup, callback = set_root })
+
+-- -----------------------------------------------------------------------------
+-- # PLUGINS
+-- -----------------------------------------------------------------------------
+require("lazy").setup({
+    ui = {
+        border = "rounded",
+    },
+    spec = {
+        -- Colorschemes
+        {
+            "ellisonleao/gruvbox.nvim",
+            priority = 1000,
+            config = function()
+                require("gruvbox").setup({
+                    italic = {
+                        strings = false,
+                        emphasis = false,
+                        comments = false,
+                        operators = false,
+                        folds = false,
+                    },
+                    transparent_mode = true,
+                })
+                vim.cmd.colorscheme("gruvbox")
+            end,
+        },
+        { "folke/tokyonight.nvim" },
+
+        -- Statusline
+        {
+            "nvim-lualine/lualine.nvim",
+            dependencies = { "nvim-tree/nvim-web-devicons" },
+            config = function()
+                require("lualine").setup({
+                    options = {
+                        theme = "auto",
+                        icons_enabled = true,
+                        component_separators = "|",
+                        section_separators = "",
+                    },
+                })
+            end,
+        },
+
+        -- File Explorer
+        {
+            "nvim-tree/nvim-tree.lua",
+            dependencies = { "nvim-tree/nvim-web-devicons" },
+            keys = {
+                { "<leader>e", '<cmd>NvimTreeToggle<CR>',  desc = "toggle file tree", },
+            },
+            config = function()
+                vim.g.loaded_netrw = 1
+                vim.g.loaded_netrwPlugin = 1
+                require("nvim-tree").setup({
+                    view = {
+                        width = 30,
+                    },
+                    renderer = {
+                        group_empty = true,
+                    },
+                    filters = {
+                        dotfiles = false,
+                    },
+                    sync_root_with_cwd = false,
+                    update_focused_file = {
+                        enable = true,
+                    },
+                })
+            end,
+        },
+
+        -- LSP, linting
+        {
+            "mason-org/mason-lspconfig.nvim",
+            opts = {},
+            dependencies = {
+                {
+                    "mason-org/mason.nvim",
+                    opts = {
+                        ui = {
+                            border = "rounded",
+                        },
+                    },
+                },
+                {
+                    "neovim/nvim-lspconfig",
+                },
+                {
+                    "folke/lazydev.nvim",
+                    ft = "lua", -- only load on lua files
+                    opts = {},
+                },
+            },
+        },
+
+        -- Autocomplete
+        {
+            'hrsh7th/nvim-cmp',
+            dependencies = {
+                {'hrsh7th/cmp-buffer'},
+                {'hrsh7th/cmp-path'},
+                {'hrsh7th/cmp-nvim-lsp'},
+                -- {'hrsh7th/cmp-nvim-lua'},
+            },
+            config = function()
+                local cmp = require("cmp")
+                cmp.setup({
+                    snippet = {
+                      expand = function(args)
+                        vim.snippet.expand(args.body) -- native neovim snippets
+                      end,
+                    },
+                    mapping = cmp.mapping.preset.insert({
+                        ['<C-j>'] = cmp.mapping.select_next_item(),
+                        ['<C-k>'] = cmp.mapping.select_prev_item(),
+                        ['<C-Space>'] = cmp.mapping.complete(),
+                        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+                    }),
+                    window = {
+                        completion = cmp.config.window.bordered({
+                            winhighlight = "Normal:Normal,FloatBorder:NormalFloat,CursorLine:Visual,Search:None"
+                        }),
+                        documentation = cmp.config.window.bordered({
+                            winhighlight = "Normal:Normal,FloatBorder:NormalFloat,CursorLine:Visual,Search:None"
+                        }),
+                    },
+                    sources = {
+                        { name = "lazydev" },
+                        { name = "nvim_lsp" },
+                        { name = "path" },
+                        {
+                            name = "buffer",
+                            option = {
+                                get_bufnrs = function() -- hint from all buffers
+                                    return vim.api.nvim_list_bufs()
+                                end
+                            }
+                        }
+                    },
+                    experimental = {
+                        ghost_text = true,
+                    }
+                })
+            end,
+        },
+
+        -- Notifications
+        {
+            "j-hui/fidget.nvim",
+        },
+
+        -- Syntax highlighting
+        {
+            "nvim-treesitter/nvim-treesitter",
+            build = ":TSUpdate",
+            config = function()
+                require("nvim-treesitter.configs").setup({
+                    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "javascript", "typescript", "html", "css", "json", "yaml", "python", "latex", "bash" },
+                    sync_install = false,
+                    auto_install = true,
+                    highlight = { enable = true },
+                    indent = { enable = true },
+                    ignore_install = {},
+                    modules = {},
+                })
+            end,
+        },
+
+        -- Undotree
+        {
+            "mbbill/undotree",
+            keys = {
+                { "<leader>u", '<cmd>UndotreeToggle<cr>',  desc = "toggle Undotree", },
+            },
+            defaults = {
+
+            },
+        },
+
+        -- Fuzzy Finder
+        {
+            "nvim-telescope/telescope.nvim",
+            tag = "0.1.8",
+            dependencies = {
+                "nvim-lua/plenary.nvim",
+                "nvim-telescope/telescope-ui-select.nvim",
+                "debugloop/telescope-undo",
+            },
+            keys = {
+                { "<C-f>",      '<cmd>Telescope git_files<cr>',    desc = "Git files", },
+                { "<leader>rg", '<cmd>Telescope live_grep<cr>',    desc = "Ripgrep", },
+                { "<leader>ff", '<cmd>Telescope find_files<cr>',   desc = "Find files", },
+                { "<leader>fs", '<cmd>Telescope grep_string<cr>',  desc = "Grep string", },
+                { "<leader>fu", '<cmd>Telescope undo<cr>',         desc = "Undo history", },
+                { "<leader>b",  '<cmd>Telescope buffers<cr>',      desc = "Buffers", },
+                { "<leader>gc", '<cmd>Telescope git_commits<cr>',  desc = "Git commits", },
+                { "<leader>gb", '<cmd>Telescope git_branches<cr>', desc = "Git branches", },
+            },
+            config = function()
+                require("telescope").setup({
+                    defaults = {
+                        mappings = {
+                            i = {
+                                ["<esc>"] = require("telescope.actions").close,
+                                ["<C-k>"] = require("telescope.actions").move_selection_previous,
+                                ["<C-j>"] = require("telescope.actions").move_selection_next,
+                            },
+                        },
+                        path_display = { truncate = 3 },
+                        layout_strategy = "horizontal",
+                    },
+                    pickers = {
+                        live_grep = {
+                            file_ignore_patterns = { '.git/' },
+                            additional_args = { "--hidden" },
+                            path_display = { "shorten" },
+                            layout_strategy = "vertical",
+                            layout_config = {
+                                preview_height = 0.4,
+                            },
+                        },
+                    },
+                    extensions = {
+                        ["ui-select"] = {
+                            require("telescope.themes").get_dropdown {},
+                        },
+                        ["undo"] = {
+                            -- side_by_side = true,
+                            layout_config = {
+                                horizontal = {
+                                    preview_width = 0.7,
+                                },
+                            },
+                        },
+                    },
+                })
+            end,
+        },
+
+        -- Git integration
+        { "tpope/vim-fugitive" },
+        { "lewis6991/gitsigns.nvim" },
+
+        -- Commenting
+        {
+            "numToStr/Comment.nvim",
+            lazy = false,
+        },
+
+        -- Auto-closing pairs
+        {
+            "windwp/nvim-autopairs",
+            --     require("nvim-autopairs").setup()
+            -- config = function()
+            -- end,
+        },
+
+        -- Surrounding text objects
+        {
+            "kylechui/nvim-surround",
+            version = "*", -- Use for stability with lazy.nvim
+            event = "VeryLazy",
+            config = function()
+                require("nvim-surround").setup()
+            end,
+        },
+
+
+        -- Alignment
+        {
+            "echasnovski/mini.align",
+            -- version = false,
+            -- config = function()
+            --     require("mini.align").setup()
+            -- end,
+        },
+
+        -- Navigating between tmux panes
+        { "christoomey/vim-tmux-navigator" },
+    },
+})
+
+--
+require("telescope").load_extension("ui-select")

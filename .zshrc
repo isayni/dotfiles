@@ -21,6 +21,7 @@ alias ip='ip -color=auto'
 alias hist='history'
 alias clip='xclip -sel clipboard'
 alias vi='vim'
+alias vim='nvim'
 alias p='sudo pacman'
 alias py='bpython'
 alias please='sudo'
@@ -47,7 +48,7 @@ unsetopt beep
 # these characters are parts of words
 WORDCHARS='*?-.[]~=&;!#$%^(){}<>'
 
-export EDITOR=vim
+export EDITOR=nvim
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
