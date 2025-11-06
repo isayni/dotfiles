@@ -170,7 +170,21 @@ floating_theme = {
 }
 layouts = [
     layout.Columns(**layout_theme),
-    layout.Zoomy(**layout_theme),
+    layout.TreeTab(
+        margin=0,
+        border_focus=colors["red"],
+        active_bg=colors["red"],
+        active_fg=colors["foreground"],
+        inactive_bg=colors["black"],
+        inactive_fg=colors["foreground"],
+        bg_color=colors["background"],
+        margin_left=0,
+        margin_y=0,
+        padding_left=0,
+        panel_width=200,
+        previous_on_rm=True
+    ),
+    # layout.Zoomy(**layout_theme),
 ]
 second_screen_layouts = [
     layout.Columns(num_columns=1, insert_position=1, **layout_theme)
@@ -186,7 +200,7 @@ widget_defaults = dict(
 extension_defaults = widget_defaults.copy()
 
 main_widgets = [
-    widget.CurrentLayoutIcon(
+    widget.CurrentLayout(
         scale = 0.8,
         padding = 6,
     ),
@@ -261,7 +275,7 @@ main_widgets = [
     ),
 ]
 second_screen_widgets = [
-    widget.CurrentLayoutIcon(
+    widget.CurrentLayout(
         scale = 0.8,
         padding = 6,
     ),
@@ -340,7 +354,7 @@ follow_mouse_focus = False
 bring_front_click = False
 cursor_warp = False
 auto_fullscreen = True
-focus_on_window_activation = "smart"
+focus_on_window_activation = "never"
 
 wmname = "Qtile"
 
