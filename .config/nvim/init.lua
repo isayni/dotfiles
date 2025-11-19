@@ -19,18 +19,17 @@ vim.opt.rtp:prepend(lazypath)
 -- -----------------------------------------------------------------------------
 -- # GENERAL OPTIONS
 -- -----------------------------------------------------------------------------
-vim.g.mapleader = "," -- Set the leader key to comma
+vim.g.mapleader = ","
 
 -- Core editor behavior
 vim.opt.encoding = "utf-8"
-vim.opt.winborder = 'rounded'
+vim.opt.winborder = "rounded"
 vim.opt.mouse = "a"           -- Enable mouse support
 vim.opt.swapfile = false      -- Disable swap files
 vim.opt.backup = false        -- Disable backup files
 vim.opt.writebackup = false   -- Disable write backup files
 vim.opt.undofile = true       -- Enable persistent undo
 vim.opt.updatetime = 300      -- Faster update time for plugins
-vim.opt.shortmess:append("c") -- Don't show "pattern not found" messages
 vim.opt.hidden = true         -- Allow hidden buffers
 vim.opt.termguicolors = true  -- Enable true color support
 vim.opt.autoindent = true     -- Auto-indent new lines
@@ -49,31 +48,27 @@ vim.opt.splitright = true     -- New vertical splits go to the right
 vim.opt.splitbelow = true     -- New horizontal splits go below
 vim.opt.hlsearch = true       -- Highlight search results
 vim.opt.incsearch = true      -- Show search results as you type
+vim.opt.ignorecase = true
 vim.opt.smartcase = true      -- Ignore case when searching for all lowercase
-vim.opt.signcolumn = "yes"    -- Always show the sign column to prevent jitter
+vim.opt.signcolumn = "yes"    -- Always show the sign column
 vim.opt.foldmethod = "indent" -- Fold based on indentation
 vim.opt.foldlevel = 99        -- Start with all folds open
+-- vim.opt.laststatus = 3
+vim.opt.cmdheight = 0         -- Merge cmd row with statusline
 
 vim.diagnostic.config({
     signs = {
         text = {
-            [vim.diagnostic.severity.ERROR] = '✘',
-            [vim.diagnostic.severity.WARN] = '⚑',
-            [vim.diagnostic.severity.HINT] = '▲',
-            [vim.diagnostic.severity.INFO] = '»',
+            [vim.diagnostic.severity.ERROR] = '',
+            [vim.diagnostic.severity.WARN] = '',
+            [vim.diagnostic.severity.INFO] = '',
+            [vim.diagnostic.severity.HINT] = '󰌵',
         },
     },
     float = {
         border = "rounded",
     },
 })
-
--- custom filetype detection
--- vim.filetype.add({
---     pattern = {
---         ['.*/%.github[%w/]+workflows[%w/]+.*%.ya?ml'] = 'yaml.github',
---     },
--- })
 
 -- -----------------------------------------------------------------------------
 -- # KEYMAPS
@@ -84,9 +79,9 @@ local keymap_opts = { noremap = true, silent = true }
 vim.keymap.set("n", "<leader>l", ":nohl<CR>", keymap_opts)
 
 -- Line wrapping and navigation
-vim.keymap.set("n", "j", "gj", { noremap = true })
-vim.keymap.set("n", "k", "gk", { noremap = true })
-vim.keymap.set("n", "Y", "y$", { noremap = true }) -- Yank to end of line
+vim.keymap.set("n", "j", "gj", keymap_opts)
+vim.keymap.set("n", "k", "gk", keymap_opts)
+vim.keymap.set("n", "Y", "y$", keymap_opts) -- Yank to end of line
 
 -- Move lines up/down in visual mode
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", keymap_opts)
@@ -97,17 +92,17 @@ vim.keymap.set("v", ">", ">gv", keymap_opts)
 vim.keymap.set("v", "<", "<gv", keymap_opts)
 
 -- Global replace
-vim.keymap.set("n", "S", ":%s///g<Left><Left>", { noremap = true, silent = false })
+vim.keymap.set("n", "S", ":%s///g<Left><Left>", keymap_opts)
 
 -- Window navigation
 vim.keymap.set("n", "<C-h>", "<C-w>h", keymap_opts)
 vim.keymap.set("n", "<C-j>", "<C-w>j", keymap_opts)
 vim.keymap.set("n", "<C-k>", "<C-w>k", keymap_opts)
-vim.keymap.set("n", " <C-l>", "<C-w>l", keymap_opts)
+vim.keymap.set("n", "<C-l>", "<C-w>l", keymap_opts)
 
 -- Window resizing
-vim.keymap.set("n", "<leader>=", ":vertical resize +5<CR>", keymap_opts)
-vim.keymap.set("n", "<leader>-", ":vertical resize -5<CR>", keymap_opts)
+vim.keymap.set("n", "<leader>=", ":vertical resize +10<CR>", keymap_opts)
+vim.keymap.set("n", "<leader>-", ":vertical resize -10<CR>", keymap_opts)
 
 -- Tab navigation
 vim.keymap.set("n", "<Leader><Tab>", ":tabnext<CR>", keymap_opts)
@@ -115,7 +110,7 @@ vim.keymap.set("n", "<Leader><S-Tab>", ":tabprevious<CR>", keymap_opts)
 vim.keymap.set("n", "<C-n>", ":tabnew<CR>", keymap_opts)
 
 -- Folding
-vim.keymap.set("n", "`", "za", keymap_opts) -- Toggle fold
+vim.keymap.set("n", "`", "za", keymap_opts)
 
 -- LSP
 vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>")
@@ -181,8 +176,36 @@ require("lazy").setup({
                         folds = false,
                     },
                     transparent_mode = true,
+                    overrides = {
+                        StatusLine = { bg = "none" },
+                        StatusLineNC = { bg = "none" },
+                        WinBar = { bg = "none" },
+                        WinBarNC = { bg = "none" },
+                    }
                 })
                 vim.cmd.colorscheme("gruvbox")
+            end,
+        },
+        {
+            "tiagovla/tokyodark.nvim",
+            config = function()
+                require("tokyodark").setup({
+                    styles = {
+                        comments    = { italic = false },
+                        keywords    = { italic = false },
+                        identifiers = { italic = false },
+                        functions   = { italic = false },
+                        variables   = { italic = false },
+                    },
+                    transparent_background = true,
+                    custom_highlights = {
+                        StatusLine = { bg = "none" },
+                        StatusLineNC = { bg = "none" },
+                        WinBar = { bg = "none" },
+                        WinBarNC = { bg = "none" },
+                    }
+                })
+                -- vim.cmd.colorscheme("tokyodark")
             end,
         },
         { "folke/tokyonight.nvim" },
@@ -191,13 +214,110 @@ require("lazy").setup({
         {
             "nvim-lualine/lualine.nvim",
             dependencies = { "nvim-tree/nvim-web-devicons" },
+            event = "VeryLazy",
             config = function()
+                local auto = require "lualine.themes.auto"
+                local lualine_modes = { "insert", "normal", "visual", "command", "replace", "inactive", "terminal" }
+                for _, field in ipairs(lualine_modes) do
+                  if auto[field] and auto[field].c then auto[field].c.bg = "NONE" end
+                end
                 require("lualine").setup({
                     options = {
-                        theme = "auto",
+                        theme = auto,
                         icons_enabled = true,
                         component_separators = "|",
-                        section_separators = "",
+                        section_separators = { left = '', right = '' },
+                        globalstatus = true,
+                    },
+                    sections = {
+                        lualine_a = {
+                            {
+                                'mode',
+                                separator = {
+                                    left = '', right = ''
+                                },
+                            }
+                        },
+                        lualine_b = {
+                            {
+                                "branch",
+                                icon = "",
+                            },
+                            {
+                                "diff",
+                                symbols = {
+                                    added = " ",
+                                    modified = " ",
+                                    removed = " ",
+                                },
+                            },
+                        },
+                        lualine_c = {
+                        lualine_c = {
+                        },
+                        },
+                        lualine_x = {
+                            function()
+                                if vim.bo.readonly then
+                                    return " "
+                                else
+                                    return ""
+                                end
+                            end,
+                            {
+                                "diagnostics",
+                                symbols = {
+                                    error = " ",
+                                    warn = " ",
+                                    info = " ",
+                                    hint = "󰌵 ",
+                                    Error_alt = "󰅚",
+                                    Warning_alt = "󰀪",
+                                    Information_alt = "",
+                                    Hint_alt = "󰌶",
+                                }
+                            },
+                        },
+                        lualine_y = {
+                            {
+                                'encoding',
+                            },
+                            {
+                                'filetype',
+                            },
+                        },
+                        lualine_z = {
+                            {
+                                'progress',
+                                padding = { right = 1 },
+                            },
+                            {
+                                'location',
+                                separator = { left = '', right = '' },
+                                padding = 0
+                            },
+                        },
+                    },
+                    winbar = {
+                        lualine_a = {
+                            {
+                                'filename',
+                                separator = {
+                                    left = '', right = ''
+                                },
+                            }
+                        },
+                        lualine_c = { },
+                    },
+                    inactive_winbar = {
+                        lualine_a = {
+                            {
+                                'filename',
+                                separator = {
+                                    left = '', right = ''
+                                },
+                            }
+                        },
                     },
                 })
             end,
@@ -249,7 +369,7 @@ require("lazy").setup({
                 },
                 {
                     "folke/lazydev.nvim",
-                    ft = "lua", -- only load on lua files
+                    ft = "lua",
                     opts = {},
                 },
             },
@@ -262,7 +382,6 @@ require("lazy").setup({
                 {'hrsh7th/cmp-buffer'},
                 {'hrsh7th/cmp-path'},
                 {'hrsh7th/cmp-nvim-lsp'},
-                -- {'hrsh7th/cmp-nvim-lua'},
             },
             config = function()
                 local cmp = require("cmp")
@@ -347,6 +466,10 @@ require("lazy").setup({
                 "nvim-lua/plenary.nvim",
                 "nvim-telescope/telescope-ui-select.nvim",
                 "debugloop/telescope-undo",
+                {
+                    "nvim-telescope/telescope-fzf-native.nvim",
+                    build = "make"
+                },
             },
             keys = {
                 { "<C-f>",      '<cmd>Telescope git_files<cr>',    desc = "Git files", },
@@ -386,16 +509,18 @@ require("lazy").setup({
                         ["ui-select"] = {
                             require("telescope.themes").get_dropdown {},
                         },
-                        ["undo"] = {
-                            -- side_by_side = true,
+                        undo = {
                             layout_config = {
                                 horizontal = {
                                     preview_width = 0.7,
                                 },
                             },
                         },
+                        fzf = {},
                     },
                 })
+                require("telescope").load_extension("ui-select")
+                require("telescope").load_extension("fzf")
             end,
         },
 
@@ -412,9 +537,9 @@ require("lazy").setup({
         -- Auto-closing pairs
         {
             "windwp/nvim-autopairs",
-            --     require("nvim-autopairs").setup()
-            -- config = function()
-            -- end,
+            config = function()
+                require("nvim-autopairs").setup()
+            end,
         },
 
         -- Surrounding text objects
@@ -431,16 +556,21 @@ require("lazy").setup({
         -- Alignment
         {
             "echasnovski/mini.align",
-            -- version = false,
-            -- config = function()
-            --     require("mini.align").setup()
-            -- end,
+            config = function()
+                require("mini.align").setup()
+            end,
         },
 
-        -- Navigating between tmux panes
+        -- tmux
+        {
+            "vimpostor/vim-tpipeline",
+            event = "VeryLazy",
+            config = function ()
+                -- vim.g.tpipeline_clearstl = 1 -- no statusline on splits
+                -- vim.opt.fillchars = "stlnc:─,stl:─,vert:│"
+
+            end
+        },
         { "christoomey/vim-tmux-navigator" },
     },
 })
-
---
-require("telescope").load_extension("ui-select")
