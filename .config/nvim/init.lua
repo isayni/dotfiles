@@ -30,7 +30,7 @@ vim.opt.backup = false        -- Disable backup files
 vim.opt.writebackup = false   -- Disable write backup files
 vim.opt.undofile = true       -- Enable persistent undo
 vim.opt.updatetime = 300      -- Faster update time for plugins
-vim.opt.hidden = true         -- Allow hidden buffers
+vim.opt.hidden = false        -- Allow hidden buffers
 vim.opt.termguicolors = true  -- Enable true color support
 vim.opt.autoindent = true     -- Auto-indent new lines
 vim.opt.smartindent = true    -- Be smart about it
@@ -53,7 +53,7 @@ vim.opt.smartcase = true      -- Ignore case when searching for all lowercase
 vim.opt.signcolumn = "yes"    -- Always show the sign column
 vim.opt.foldmethod = "indent" -- Fold based on indentation
 vim.opt.foldlevel = 99        -- Start with all folds open
--- vim.opt.laststatus = 3
+vim.opt.laststatus = 0
 vim.opt.cmdheight = 0         -- Merge cmd row with statusline
 
 vim.diagnostic.config({
@@ -183,7 +183,7 @@ require("lazy").setup({
                         WinBarNC = { bg = "none" },
                     }
                 })
-                vim.cmd.colorscheme("gruvbox")
+                -- vim.cmd.colorscheme("gruvbox")
             end,
         },
         {
@@ -205,7 +205,7 @@ require("lazy").setup({
                         WinBarNC = { bg = "none" },
                     }
                 })
-                -- vim.cmd.colorscheme("tokyodark")
+                vim.cmd.colorscheme("tokyodark")
             end,
         },
         { "folke/tokyonight.nvim" },
@@ -221,6 +221,16 @@ require("lazy").setup({
                 for _, field in ipairs(lualine_modes) do
                   if auto[field] and auto[field].c then auto[field].c.bg = "NONE" end
                 end
+
+                local branch_component = require('lualine.components.branch'):extend()
+                branch_component.update_status = function(_, is_focused)
+                    local branch = branch_component.super.update_status(_, is_focused)
+                    if #branch > 26 then
+                        branch = branch:sub(1, 26) .. "..."
+                    end
+                    return branch
+                end
+
                 require("lualine").setup({
                     options = {
                         theme = auto,
@@ -240,9 +250,16 @@ require("lazy").setup({
                         },
                         lualine_b = {
                             {
-                                "branch",
-                                icon = "",
+                                branch_component,
+                                icon=""
                             },
+                            function()
+                                if vim.bo.readonly then
+                                    return " "
+                                else
+                                    return ""
+                                end
+                            end,
                             {
                                 "diff",
                                 symbols = {
@@ -253,17 +270,11 @@ require("lazy").setup({
                             },
                         },
                         lualine_c = {
-                        lualine_c = {
-                        },
+
                         },
                         lualine_x = {
-                            function()
-                                if vim.bo.readonly then
-                                    return " "
-                                else
-                                    return ""
-                                end
-                            end,
+                        },
+                        lualine_y = {
                             {
                                 "diagnostics",
                                 symbols = {
@@ -277,8 +288,6 @@ require("lazy").setup({
                                     Hint_alt = "󰌶",
                                 }
                             },
-                        },
-                        lualine_y = {
                             {
                                 'encoding',
                             },
@@ -289,12 +298,18 @@ require("lazy").setup({
                         lualine_z = {
                             {
                                 'progress',
-                                padding = { right = 1 },
+                                padding = 0
                             },
                             {
                                 'location',
                                 separator = { left = '', right = '' },
-                                padding = 0
+                                padding = { left = 1 },
+                            },
+                            {
+                                'searchcount',
+                                maxcount = 999999,
+                                separator = { left = '', right = '' },
+                                padding = { left = 1 }
                             },
                         },
                     },
@@ -320,6 +335,16 @@ require("lazy").setup({
                         },
                     },
                 })
+                if vim.env.TMUX then
+                    vim.api.nvim_create_autocmd({ "FocusGained", "ColorScheme", "VimEnter" }, {
+                      callback = function()
+                        vim.defer_fn(function()
+                          vim.opt.laststatus = 0
+                        end, 100)
+                      end,
+                    })
+                    vim.opt.laststatus = 0
+                end
             end,
         },
 
@@ -331,9 +356,41 @@ require("lazy").setup({
                 { "<leader>e", '<cmd>NvimTreeToggle<CR>',  desc = "toggle file tree", },
             },
             config = function()
+                local function my_on_attach(bufnr)
+                    local api = require('nvim-tree.api')
+
+                    local function opts(desc)
+                    return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+                    end
+
+                    -- Default mappings
+                    api.config.mappings.default_on_attach(bufnr)
+
+                    -- Split mappings
+                    vim.keymap.set("n", "<C-v>", api.node.open.vertical,   opts("Open: Vertical Split"))
+                    vim.keymap.set("n", "<C-s>", api.node.open.horizontal, opts("Open: Horizontal Split"))
+
+                    -- Custom mapping: Live Grep in Node
+                    vim.keymap.set('n', '<leader>rg', function()
+                        local node = api.tree.get_node_under_cursor()
+                        if not node then return end
+
+                        -- Determine the search directory
+                        local cwd = vim.fn.getcwd():gsub("[%(%)%.%%%+%-%*%?%[%]%^%$]", "%%%1")
+                        local path = string.gsub(node.absolute_path, "^" .. cwd .. "/", "")
+
+                        -- Launch Telescope live_grep in that path
+                        require('telescope.builtin').live_grep({
+                          search_dirs = { path },
+                          prompt_title = "Live Grep in '" .. path .. "'"
+                        })
+                    end, opts('Telescope Live Grep'))
+                end
+
                 vim.g.loaded_netrw = 1
                 vim.g.loaded_netrwPlugin = 1
                 require("nvim-tree").setup({
+                    on_attach = my_on_attach,
                     view = {
                         width = 30,
                     },
@@ -428,6 +485,9 @@ require("lazy").setup({
         -- Notifications
         {
             "j-hui/fidget.nvim",
+            opts = {
+
+            }
         },
 
         -- Syntax highlighting
@@ -489,6 +549,8 @@ require("lazy").setup({
                                 ["<esc>"] = require("telescope.actions").close,
                                 ["<C-k>"] = require("telescope.actions").move_selection_previous,
                                 ["<C-j>"] = require("telescope.actions").move_selection_next,
+                                ["<C-s>"] = require("telescope.actions").select_horizontal,
+                                ["<C-v>"] = require("telescope.actions").select_vertical,
                             },
                         },
                         path_display = { truncate = 3 },
@@ -561,6 +623,22 @@ require("lazy").setup({
             end,
         },
 
+        -- Show code context
+        {
+            "nvim-treesitter/nvim-treesitter-context",
+            keys = {
+                { "<leader>cc", '<cmd>TSContext toggle<cr>', desc = "Toggle code context", },
+            },
+            config = function()
+                require("treesitter-context").setup({
+                    enable = false,
+                    mode = "topline",
+                    max_lines = 5
+                })
+                vim.api.nvim_set_hl(0, "TreesitterContextBottom", { underline = true })
+            end,
+        },
+
         -- tmux
         {
             "vimpostor/vim-tpipeline",
@@ -572,5 +650,35 @@ require("lazy").setup({
             end
         },
         { "christoomey/vim-tmux-navigator" },
+
+        -- smooth scrolling
+        {
+            "karb94/neoscroll.nvim",
+            config = function ()
+                require('neoscroll').setup({
+                    mappings = {                 -- Keys to be mapped to their corresponding default scrolling animation
+                        '<C-u>', '<C-d>',
+                        'zt', 'zz', 'zb',
+                    },
+                    hide_cursor = true,          -- Hide cursor while scrolling
+                    stop_eof = true,             -- Stop at <EOF> when scrolling downwards
+                    respect_scrolloff = false,   -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+                    cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
+                    duration_multiplier = 0.2,   -- Global duration multiplier
+                    easing = 'cubic',            -- Default easing function
+                    pre_hook = nil,              -- Function to run before the scrolling animation starts
+                    post_hook = nil,             -- Function to run after the scrolling animation ends
+                    performance_mode = false,    -- Disable "Performance Mode" on all buffers.
+                    ignored_events = {           -- Events ignored while scrolling
+                        'WinScrolled', 'CursorMoved'
+                    },
+                })
+            end
+        },
+
+        -- GH Copi
+        {
+            "github/copilot.vim",
+        },
     },
 })
