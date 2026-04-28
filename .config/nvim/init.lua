@@ -23,38 +23,46 @@ vim.g.mapleader = ","
 
 -- Core editor behavior
 vim.opt.encoding = "utf-8"
-vim.opt.winborder = "rounded"
-vim.opt.mouse = "a"           -- Enable mouse support
-vim.opt.swapfile = false      -- Disable swap files
-vim.opt.backup = false        -- Disable backup files
-vim.opt.writebackup = false   -- Disable write backup files
-vim.opt.undofile = true       -- Enable persistent undo
-vim.opt.updatetime = 300      -- Faster update time for plugins
-vim.opt.hidden = false        -- Allow hidden buffers
-vim.opt.termguicolors = true  -- Enable true color support
-vim.opt.autoindent = true     -- Auto-indent new lines
-vim.opt.smartindent = true    -- Be smart about it
-vim.opt.expandtab = true      -- Use spaces instead of tabs
-vim.opt.tabstop = 4           -- Number of spaces a tab is
-vim.opt.softtabstop = 4       -- Number of spaces to insert/delete with tab key
-vim.opt.shiftwidth = 4        -- Number of spaces to use for auto-indent
-vim.opt.wrap = true           -- Wrap long lines
-vim.opt.linebreak = true      -- Wrap lines at convenient places
-vim.opt.scrolloff = 5         -- Keep 5 lines of context around the cursor
-vim.opt.cursorline = true     -- Highlight the current line
-vim.opt.number = true         -- Show line numbers
-vim.opt.relativenumber = true -- Show relative line numbers
-vim.opt.splitright = true     -- New vertical splits go to the right
-vim.opt.splitbelow = true     -- New horizontal splits go below
-vim.opt.hlsearch = true       -- Highlight search results
-vim.opt.incsearch = true      -- Show search results as you type
-vim.opt.ignorecase = true
-vim.opt.smartcase = true      -- Ignore case when searching for all lowercase
-vim.opt.signcolumn = "yes"    -- Always show the sign column
-vim.opt.foldmethod = "indent" -- Fold based on indentation
-vim.opt.foldlevel = 99        -- Start with all folds open
-vim.opt.laststatus = 0
-vim.opt.cmdheight = 0         -- Merge cmd row with statusline
+vim.opt.winborder = "rounded"   -- Use rounded borders for floating windows
+vim.opt.mouse = "a"             -- Enable mouse support in all modes
+vim.opt.swapfile = false        -- Disable swap files (reduces clutter)
+vim.opt.backup = false          -- Disable backup files
+vim.opt.writebackup = false     -- Disable write backup files
+vim.opt.undofile = true         -- Enable persistent undo (survives restarts)
+vim.opt.updatetime = 300        -- Faster update time for plugins (CursorHold, etc.)
+vim.opt.hidden = false          -- Do not allow unsaved buffers to be hidden
+vim.opt.termguicolors = true    -- Enable 24-bit RGB color support in the terminal
+
+-- Indentation settings
+vim.opt.autoindent = true       -- Copy indent from the current line when starting a new line
+vim.opt.smartindent = true      -- Automatically insert extra indent in certain cases (e.g., after '{')
+vim.opt.expandtab = true        -- Use spaces instead of tab characters
+vim.opt.tabstop = 4             -- Number of spaces that a <Tab> counts for
+vim.opt.softtabstop = 4         -- Number of spaces inserted/removed when pressing <Tab>/<BS>
+vim.opt.shiftwidth = 4          -- Number of spaces used for each level of auto-indentation
+
+-- Display and layout
+vim.opt.wrap = true             -- Wrap long lines visually (does not insert line breaks)
+vim.opt.linebreak = true        -- Break wrapped lines at word boundaries, not mid-word
+vim.opt.scrolloff = 5           -- Always keep at least 5 lines visible above/below the cursor
+vim.opt.cursorline = true       -- Highlight the line the cursor is currently on
+vim.opt.number = true           -- Show absolute line numbers
+vim.opt.relativenumber = true   -- Show relative line numbers (useful for motions like 5j)
+vim.opt.splitright = true       -- Open new vertical splits to the right of the current window
+vim.opt.splitbelow = true       -- Open new horizontal splits below the current window
+vim.opt.signcolumn = "yes"      -- Always show the sign column (prevents layout shifting)
+vim.opt.laststatus = 0          -- Hide the default statusline (managed by lualine)
+vim.opt.cmdheight = 0           -- Hide the command line when not in use (merged with statusline)
+
+-- Search settings
+vim.opt.hlsearch = true         -- Highlight all matches of the current search pattern
+vim.opt.incsearch = true        -- Show search matches incrementally as you type
+vim.opt.ignorecase = true       -- Case-insensitive search by default
+vim.opt.smartcase = true        -- Override ignorecase if search pattern contains uppercase letters
+
+-- Folding
+vim.opt.foldmethod = "indent"   -- Fold code based on indentation level
+vim.opt.foldlevel = 99          -- Open all folds by default when a file is opened
 
 vim.diagnostic.config({
     signs = {
@@ -68,6 +76,18 @@ vim.diagnostic.config({
     float = {
         border = "rounded",
     },
+})
+
+-- Autodetect Ansible based on directory structure
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = { "*.yml", "*.yaml" },
+  callback = function(args)
+    local path = vim.api.nvim_buf_get_name(args.buf)
+    -- Check if the path contains 'roles/' or 'playbooks/'
+    if path:match("/roles/") or path:match("/playbooks/") then
+      vim.bo[args.buf].filetype = "yaml.ansible"
+    end
+  end,
 })
 
 -- -----------------------------------------------------------------------------
@@ -99,6 +119,10 @@ vim.keymap.set("n", "<C-h>", "<C-w>h", keymap_opts)
 vim.keymap.set("n", "<C-j>", "<C-w>j", keymap_opts)
 vim.keymap.set("n", "<C-k>", "<C-w>k", keymap_opts)
 vim.keymap.set("n", "<C-l>", "<C-w>l", keymap_opts)
+vim.keymap.set("i", "<C-h>", "<C-w>h", keymap_opts)
+vim.keymap.set("i", "<C-j>", "<C-w>j", keymap_opts)
+vim.keymap.set("i", "<C-k>", "<C-w>k", keymap_opts)
+vim.keymap.set("i", "<C-l>", "<C-w>l", keymap_opts)
 
 -- Window resizing
 vim.keymap.set("n", "<leader>=", ":vertical resize +10<CR>", keymap_opts)
@@ -130,7 +154,10 @@ if vim.fn.executable("/mnt/c/Windows/System32/clip.exe") then
         group = vim.api.nvim_create_augroup("WSLYank", { clear = true }),
         pattern = "*",
         callback = function()
-            vim.fn.system("/mnt/c/Windows/System32/clip.exe", vim.fn.getreg('"'))
+            -- Only copy to clipboard for explicit yank operations (y/Y), not d/c/s etc.
+            if vim.v.event.operator == "y" then
+                vim.fn.system("/mnt/c/Windows/System32/clip.exe", vim.fn.getreg('"'))
+            end
         end,
     })
 end
@@ -183,7 +210,7 @@ require("lazy").setup({
                         WinBarNC = { bg = "none" },
                     }
                 })
-                -- vim.cmd.colorscheme("gruvbox")
+                vim.cmd.colorscheme("gruvbox")
             end,
         },
         {
@@ -205,7 +232,6 @@ require("lazy").setup({
                         WinBarNC = { bg = "none" },
                     }
                 })
-                vim.cmd.colorscheme("tokyodark")
             end,
         },
         { "folke/tokyonight.nvim" },
@@ -231,6 +257,16 @@ require("lazy").setup({
                     return branch
                 end
 
+                local function winbar_filter()
+                    local excluded_filetypes = {"Avante", "NvimTree"}
+                    for _, ft in ipairs(excluded_filetypes) do
+                        if string.find(vim.bo.filetype, ft) then
+                            return false
+                        end
+                    end
+                    return true
+                end
+
                 require("lualine").setup({
                     options = {
                         theme = auto,
@@ -253,6 +289,7 @@ require("lazy").setup({
                                 branch_component,
                                 icon=""
                             },
+                            -- branch_component,
                             function()
                                 if vim.bo.readonly then
                                     return " "
@@ -320,6 +357,7 @@ require("lazy").setup({
                                 separator = {
                                     left = '', right = ''
                                 },
+                                cond = winbar_filter,
                             }
                         },
                         lualine_c = { },
@@ -331,6 +369,7 @@ require("lazy").setup({
                                 separator = {
                                     left = '', right = ''
                                 },
+                                cond = winbar_filter,
                             }
                         },
                     },
@@ -391,6 +430,10 @@ require("lazy").setup({
                 vim.g.loaded_netrwPlugin = 1
                 require("nvim-tree").setup({
                     on_attach = my_on_attach,
+                    git = {
+                        enable = true,
+                        ignore = false,
+                    },
                     view = {
                         width = 30,
                     },
@@ -399,6 +442,7 @@ require("lazy").setup({
                     },
                     filters = {
                         dotfiles = false,
+                        custom = { '^.git$' },
                     },
                     sync_root_with_cwd = false,
                     update_focused_file = {
@@ -589,6 +633,7 @@ require("lazy").setup({
         -- Git integration
         { "tpope/vim-fugitive" },
         { "lewis6991/gitsigns.nvim" },
+        { "sindrets/diffview.nvim" },
 
         -- Commenting
         {
@@ -613,7 +658,6 @@ require("lazy").setup({
                 require("nvim-surround").setup()
             end,
         },
-
 
         -- Alignment
         {
@@ -642,16 +686,11 @@ require("lazy").setup({
         -- tmux
         {
             "vimpostor/vim-tpipeline",
-            event = "VeryLazy",
-            config = function ()
-                -- vim.g.tpipeline_clearstl = 1 -- no statusline on splits
-                -- vim.opt.fillchars = "stlnc:─,stl:─,vert:│"
-
-            end
+            event = "VeryLazy"
         },
         { "christoomey/vim-tmux-navigator" },
 
-        -- smooth scrolling
+        -- Smooth scrolling
         {
             "karb94/neoscroll.nvim",
             config = function ()
@@ -676,9 +715,68 @@ require("lazy").setup({
             end
         },
 
-        -- GH Copi
+        -- AI
         {
-            "github/copilot.vim",
-        },
+            "yetone/avante.nvim",
+            build = "make",
+            event = "VeryLazy",
+            version = false, -- Never set this value to "*"! Never!
+            ---@module 'avante'
+            ---@type avante.Config
+            keys = {
+                {
+                    "<leader>a+",
+                    function()
+                        local tree_ext = require("avante.extensions.nvim_tree")
+                        tree_ext.add_file()
+                    end,
+                    desc = "Select file in NvimTree",
+                    ft = "NvimTree",
+                },
+                {
+                    "<leader>a-",
+                    function()
+                        local tree_ext = require("avante.extensions.nvim_tree")
+                        tree_ext.remove_file()
+                    end,
+                    desc = "Deselect file in NvimTree",
+                    ft = "NvimTree",
+                },
+            },
+            opts = {
+                provider = "claude",
+                windows = {
+                    width = 40
+                },
+                providers = {
+                    copilot = {
+                        model = "claude-sonnet-4.6"
+                    },
+                    claude = {
+                        model = "claude-sonnet-4.6"
+                    }
+                }
+            },
+            dependencies = {
+                "nvim-lua/plenary.nvim",
+                "MunifTanjim/nui.nvim",
+            },
+        }
     },
 })
+
+-- Colorscheme
+vim.cmd.colorscheme("gruvbox")
+vim.api.nvim_set_hl(0, "Visual", { bg = '#ebdbb2', fg = '#222222' })
+
+vim.api.nvim_set_hl(0, "AvanteSidebarNormal", { bg = '#202020' })
+vim.api.nvim_set_hl(0, "AvantePromptInput",   { bg = '#202020' })
+
+-- Highlight user prompts (rendered as blockquotes) in cyan in Avante chat history
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "Avante",
+    callback = function()
+        vim.api.nvim_set_hl(0, "@markup.quote", { fg = '#56b6c2', bold = true })
+    end,
+})
+
