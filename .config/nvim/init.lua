@@ -258,7 +258,7 @@ require("lazy").setup({
                 end
 
                 local function winbar_filter()
-                    local excluded_filetypes = {"Avante", "NvimTree"}
+                    local excluded_filetypes = {"NvimTree"}
                     for _, ft in ipairs(excluded_filetypes) do
                         if string.find(vim.bo.filetype, ft) then
                             return false
@@ -714,69 +714,9 @@ require("lazy").setup({
                 })
             end
         },
-
-        -- AI
-        {
-            "yetone/avante.nvim",
-            build = "make",
-            event = "VeryLazy",
-            version = false, -- Never set this value to "*"! Never!
-            ---@module 'avante'
-            ---@type avante.Config
-            keys = {
-                {
-                    "<leader>a+",
-                    function()
-                        local tree_ext = require("avante.extensions.nvim_tree")
-                        tree_ext.add_file()
-                    end,
-                    desc = "Select file in NvimTree",
-                    ft = "NvimTree",
-                },
-                {
-                    "<leader>a-",
-                    function()
-                        local tree_ext = require("avante.extensions.nvim_tree")
-                        tree_ext.remove_file()
-                    end,
-                    desc = "Deselect file in NvimTree",
-                    ft = "NvimTree",
-                },
-            },
-            opts = {
-                provider = "claude",
-                windows = {
-                    width = 40
-                },
-                providers = {
-                    copilot = {
-                        model = "claude-sonnet-4.6"
-                    },
-                    claude = {
-                        model = "claude-sonnet-4.6"
-                    }
-                }
-            },
-            dependencies = {
-                "nvim-lua/plenary.nvim",
-                "MunifTanjim/nui.nvim",
-            },
-        }
     },
 })
 
 -- Colorscheme
 vim.cmd.colorscheme("gruvbox")
 vim.api.nvim_set_hl(0, "Visual", { bg = '#ebdbb2', fg = '#222222' })
-
-vim.api.nvim_set_hl(0, "AvanteSidebarNormal", { bg = '#202020' })
-vim.api.nvim_set_hl(0, "AvantePromptInput",   { bg = '#202020' })
-
--- Highlight user prompts (rendered as blockquotes) in cyan in Avante chat history
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "Avante",
-    callback = function()
-        vim.api.nvim_set_hl(0, "@markup.quote", { fg = '#56b6c2', bold = true })
-    end,
-})
-
