@@ -633,8 +633,37 @@ require("lazy").setup({
 
         -- Git integration
         { "tpope/vim-fugitive" },
-        { "lewis6991/gitsigns.nvim" },
         { "sindrets/diffview.nvim" },
+        {
+            "lewis6991/gitsigns.nvim",
+            config = function()
+                require("gitsigns").setup {
+                    on_attach = function(bufnr)
+                        local gitsigns = require('gitsigns')
+
+                        local function map(mode, l, r, opts)
+                            opts = opts or {}
+                            opts.buffer = bufnr
+                            vim.keymap.set(mode, l, r, opts)
+                        end
+
+                        vim.api.nvim_create_user_command('Gblame', 'Gitsigns blame', { desc = 'Open git blame panel' })
+
+                        map('n', '<leader>hp', function()
+                            gitsigns.nav_hunk('prev')
+                        end)
+                        map('n', '<leader>hn', function()
+                            gitsigns.nav_hunk('next')
+                        end)
+                        map('n', '<leader>hb', function()
+                            gitsigns.blame_line({ full = true })
+                        end)
+                        map('n', '<leader>hr', gitsigns.reset_hunk)
+                        map('n', '<leader>hd', gitsigns.preview_hunk)
+                    end
+                }
+            end,
+        },
 
         -- Commenting
         {
@@ -680,7 +709,7 @@ require("lazy").setup({
                     mode = "topline",
                     max_lines = 5
                 })
-                vim.api.nvim_set_hl(0, "TreesitterContextBottom", { underline = true })
+                vim.api.nvim_set_hl(0, "TreesitterContextBottom", { underline = true, sp="#ebdbb2" })
             end,
         },
 
