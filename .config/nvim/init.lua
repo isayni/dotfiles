@@ -748,5 +748,26 @@ require("lazy").setup({
 })
 
 -- Colorscheme
+local function lighten(color, amount)
+  local r = bit.rshift(color, 16)
+  local g = bit.band(bit.rshift(color, 8), 0xff)
+  local b = bit.band(color, 0xff)
+  local function mix(c) return math.floor(c + (255 - c) * amount) end
+  return mix(r) * 0x10000 + mix(g) * 0x100 + mix(b)
+end
+
+local function modify_colorscheme()
+  -- visual mode
+  local normal = vim.api.nvim_get_hl(0, { name = "Normal", link = false })
+  vim.api.nvim_set_hl(0, "Visual", { reverse = true , fg = normal.fg })
+
+  -- gitsigns preview
+  local add = vim.api.nvim_get_hl(0, { name = "GitSignsAddPreview", link = false })
+  local del = vim.api.nvim_get_hl(0, { name = "GitSignsDeletePreview", link = false })
+  vim.api.nvim_set_hl(0, "GitSignsAddInline",    { bg = lighten(add.bg or '#1e3a2a', 0.12) })
+  vim.api.nvim_set_hl(0, "GitSignsDeleteInline", { bg = lighten(del.bg or '#3a1e22', 0.12) })
+  vim.api.nvim_set_hl(0, "GitSignsChangeInline", { bg = lighten(add.bg or '#1e3a2a', 0.12) })
+end
+
+vim.api.nvim_create_autocmd("ColorScheme", { callback = modify_colorscheme })
 vim.cmd.colorscheme("gruvbox")
-vim.api.nvim_set_hl(0, "Visual", { bg = '#ebdbb2', fg = '#222222' })

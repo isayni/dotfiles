@@ -22,9 +22,9 @@ white = "#ebdbb2"
 yellow = "#d79921"
 
 [colors.primary]
-background = "#101010"
+# background = "#101010"
 foreground = "#fbf1c7"
-# background = "#000000"
+background = "#060606"
 # foreground = "#ffffff"
 
 [cursor]
@@ -35,15 +35,22 @@ unfocused_hollow = false
 size = 12
 
 [font.normal]
-family = "JetBrainsMono NF Semibold"
+# family = "JetBrainsMono NF Semibold"
+family = "FiraCode Nerd Font Mono Med"
 
 [scrolling]
 history = 1000
 multiplier = 5
 
 [window]
-opacity = 0.96
+# opacity = 0.96
+opacity = 1
 
 [window.padding]
 x = 14
 y = 8
+
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001B\r"
